@@ -1,0 +1,92 @@
+{
+  "hooks": {
+    "Stop": [
+      {
+        "matcher": "Edit|Write|MultiEdit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "echo '\\n[Reminder] Run /pydantic-review before committing'"
+          }
+        ]
+      }
+    ]
+  },
+  "permissions": {
+    "allow": [
+      "Bash(.claude/skills/gh-cli-best-practices/get-latest-ci-failure.sh)",
+      "Bash(./local-notes/normalize-snapshots.zsh:*)",
+      "Bash(echo:*)",
+      "Bash(cat:*)",
+      "Bash(curl:*)",
+      "Bash(find:*)",
+      "Bash(git diff:*)",
+      "Bash(git fetch:*)",
+      "Bash(git grep:*)",
+      "Bash(git log:*)",
+      "Bash(git pull)",
+      "Bash(git show:*)",
+      "Bash(git status:*)",
+      "Bash(gh api:*)",
+      "Bash(gh issue list:*)",
+      "Bash(gh issue view:*)",
+      "Bash(gh pr checkout:*)",
+      "Bash(gh pr diff:*)",
+      "Bash(gh pr view:*)",
+      "Bash(gh repo view:*)",
+      "Bash(gh run list:*)",
+      "Bash(gh search:*)",
+      "Bash(grep:*)",
+      "Bash(jq:*)",
+      "Bash(ls:*)",
+      "Bash(mkdir:*)",
+      "Bash(pre-commit run:*)",
+      "Bash(python -c:*)",
+      "Bash(sed:*)",
+      "Bash(sg:*)",
+      "Bash(source .env)",
+      "Bash(source .venv/bin/activate:*)",
+      "Bash(source .venv/bin/activate && uv run:*)",
+      "Bash(source .venv/bin/activate && python:*)",
+      "Bash(uv pip show:*)",
+      "Bash(uv run pytest tests/ -k:*)",
+      "Bash(wc:*)",
+      "Bash(xargs:*)",
+      "mcp__acp__Bash",
+      "mcp__acp__Write",
+      "mcp__acp__Edit",
+      "mcp__sequential-thinking__sequentialthinking",
+      "WebFetch(domain:ai.google.dev)",
+      "WebFetch(domain:community.openai.com)",
+      "WebFetch(domain:console.groq.com)",
+      "WebFetch(domain:docs.mistral.ai)",
+      "WebFetch(domain:cookbook.openai.com)",
+      "WebFetch(domain:deepwiki.com)",
+      "WebFetch(domain:github.com)",
+      "WebFetch(domain:patch-diff.githubusercontent.com)",
+      "WebFetch(domain:platform.claude.com)",
+      "WebFetch(domain:platform.openai.com)",
+      "WebFetch(domain:docs.anthropic.com)",
+      "WebFetch(domain:docs.claude.com)",
+      "WebFetch(domain:docs.cloud.google.com)",
+      "WebSearch"
+    ],
+    "deny": [
+      "Bash(make test:*)",
+      "Bash(find /Users/david:*)",
+      "Bash(uv run pytest tests/:*)",
+      "Bash(source .venv/bin/activate && uv run pytest tests/:*)"
+    ],
+    "ask": [
+      "Bash(gh pr comment:*)",
+      "Bash(gh issue comment:*)",
+      "Bash(gh api repos/*/reactions:*)",
+      "Bash(git add:*)",
+      "Bash(git checkout:*)",
+      "Bash(git commit:*)",
+      "Bash(git push:*)",
+      "Bash(git reset:*)"
+    ]
+  },
+  "enabledMcpjsonServers": ["sequential-thinking"]
+}

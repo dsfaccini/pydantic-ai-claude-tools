@@ -1,0 +1,49 @@
+# Creates new pydantic worktree with branch
+# Usage: source this file, then call pydantic-worktree <branch-name>
+
+pydantic-worktree() {
+    if [ -z "$PYDANTIC_AI_REPO" ]; then
+        echo "Error: PYDANTIC_AI_REPO env var not set"
+        echo "Set it to your pydantic-ai main repo path, e.g.:"
+        echo "  export PYDANTIC_AI_REPO=/Users/david/projects/forks/pydantic-ai-main"
+        return 1
+    fi
+
+    if [ $# -ne 1 ]; then
+        echo "Usage: pydantic-worktree <branch-name>"
+        return 1
+    fi
+
+    local script_dir="${0:A:h}"
+    local branch_name="$1"
+    local worktree_path="$(dirname "$PYDANTIC_AI_REPO")/$branch_name"
+
+    echo "Creating worktree at: $worktree_path"
+    echo "Branch name: $branch_name"
+
+    cd "$PYDANTIC_AI_REPO" || return 1
+    git worktree add -b "$branch_name" "$worktree_path" origin/main || return 1
+
+    cd "$worktree_path" || return 1
+
+    # Copy config files
+    "$script_dir/copy-pydantic-config.sh" . || return 1
+
+    echo "Merging upstream/main..."
+    git merge upstream/main --no-edit || return 1
+
+    echo "Running make install..."
+    make install || return 1
+
+    # Set venv prompt to branch name
+    if [ -f ".venv/bin/activate" ]; then
+        sed -i '' "s/VIRTUAL_ENV_PROMPT=\"[^\"]*\"/VIRTUAL_ENV_PROMPT=\"$branch_name\"/" .venv/bin/activate
+    fi
+
+    source .venv/bin/activate
+
+    echo "Setup complete! Opening VS Code..."
+    code .
+
+    echo "$worktree_path"
+}

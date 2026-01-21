@@ -1,0 +1,1408 @@
+> timeout 60 uv run env PREFECT_LOGGING_LEVEL=DEBUG coverage run -m pytest tests/test_prefect.py::test_multiple_agents -v -s 2>&1 | tee local-notes/prefect-hang-log.txt
+
+============================= test session starts ==============================
+platform darwin -- Python 3.12.10, pytest-9.0.2, pluggy-1.6.0 -- /Users/david/projects/forks/pydantic-ai-main/.venv/bin/python
+cachedir: .pytest_cache
+rootdir: /Users/david/projects/forks/pydantic-ai-main
+configfile: pyproject.toml
+plugins: mock-3.15.1, recording-0.13.4, pretty-1.3.0, xdist-3.8.0, devtools-0.12.2, anyio-4.8.0, inlin
+tests/test_prefect.py:564 test_multiple_agents - prefect.exceptions.…
+=================================== FAILURES ===================================
+_____________________________ test_multiple_agents _____________________________
+
+pyfuncitem = <Function test_multiple_agents>
+
+    @pytest.hookimpl(tryfirst=True)
+    def pytest_pyfunc_call(pyfuncitem: Any) -> bool | None:
+        def run_with_hypothesis(**kwargs: Any) -> None:
+            with get_runner(backend_name, backend_options) as runner:
+                runner.run_test(original_func, kwargs)
+    
+        backend = pyfuncitem.funcargs.get("anyio_backend")
+        if backend:
+            backend_name, backend_options = extract_backend_and_options(backend)
+    
+            if hasattr(pyfuncitem.obj, "hypothesis"):
+                # Wrap the inner test function unless it's already wrapped
+                original_func = pyfuncitem.obj.hypothesis.inner_test
+                if original_func.__qualname__ != run_with_hypothesis.__qualname__:
+                    if iscoroutinefunction(original_func):
+                        pyfuncitem.obj.hypothesis.inner_test = run_with_hypothesis
+    
+                return None
+    
+            if iscoroutinefunction(pyfuncitem.obj):
+                funcargs = pyfuncitem.funcargs
+                testargs = {arg: funcargs[arg] for arg in pyfuncitem._fixtureinfo.argnames}
+                with get_runner(backend_name, backend_options) as runner:
+                    try:
+>                       runner.run_test(pyfuncitem.obj, testargs)
+
+.venv/lib/python3.12/site-packages/anyio/pytest_plugin.py:160: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+.venv/lib/python3.12/site-packages/anyio/_backends/_asyncio.py:2266: in run_test
+    self.get_loop().run_until_complete(
+../../../.local/share/uv/python/cpython-3.12.10-macos-aarch64-none/lib/python3.12/asyncio/base_events.py:678: in run_until_complete
+    self.run_forever()
+../../../.local/share/uv/python/cpython-3.12.10-macos-aarch64-none/lib/python3.12/asyncio/base_events.py:645: in run_forever
+    self._run_once()
+../../../.local/share/uv/python/cpython-3.12.10-macos-aarch64-none/lib/python3.12/asyncio/base_events.py:1961: in _run_once
+    event_list = self._selector.select(timeout)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+../../../.local/share/uv/python/cpython-3.12.10-macos-aarch64-none/lib/python3.12/selectors.py:566: in select
+    kev_list = self._selector.control(None, max_ev, timeout)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+args = (15, <frame at 0x1402bd250, file '/Users/david/.local/share/uv/python/cpython-3.12.10-macos-aarch64-none/lib/python3.12/selectors.py', line 567, code select>)
+
+    def cancel_flow_run(*args: object) -> NoReturn:
+>       raise TerminationSignal(signal=signal.SIGTERM)
+E       prefect.exceptions.TerminationSignal
+
+.venv/lib/python3.12/site-packages/prefect/utilities/engine.py:174: TerminationSignal
+
+During handling of the above exception, another exception occurred:
+
+pyfuncitem = <Function test_multiple_agents>
+
+    @pytest.hookimpl(tryfirst=True)
+    def pytest_pyfunc_call(pyfuncitem: Any) -> bool | None:
+        def run_with_hypothesis(**kwargs: Any) -> None:
+            with get_runner(backend_name, backend_options) as runner:
+                runner.run_test(original_func, kwargs)
+    
+        backend = pyfuncitem.funcargs.get("anyio_backend")
+        if backend:
+            backend_name, backend_options = extract_backend_and_options(backend)
+    
+            if hasattr(pyfuncitem.obj, "hypothesis"):
+                # Wrap the inner test function unless it's already wrapped
+                original_func = pyfuncitem.obj.hypothesis.inner_test
+                if original_func.__qualname__ != run_with_hypothesis.__qualname__:
+                    if iscoroutinefunction(original_func):
+                        pyfuncitem.obj.hypothesis.inner_test = run_with_hypothesis
+    
+                return None
+    
+            if iscoroutinefunction(pyfuncitem.obj):
+                funcargs = pyfuncitem.funcargs
+                testargs = {arg: funcargs[arg] for arg in pyfuncitem._fixtureinfo.argnames}
+>               with get_runner(backend_name, backend_options) as runner:
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.venv/lib/python3.12/site-packages/anyio/pytest_plugin.py:158: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+../../../.local/share/uv/python/cpython-3.12.10-macos-aarch64-none/lib/python3.12/contextlib.py:141: in __exit__
+    def __exit__(self, typ, value, traceback):
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+args = (15, <frame at 0x1402dd1c0, file '/Users/david/.local/share/uv/python/cpython-3.12.10-macos-aarch64-none/lib/python3.12/contextlib.py', line 141, code __exit__>)
+
+    def cancel_flow_run(*args: object) -> NoReturn:
+>       raise TerminationSignal(signal=signal.SIGTERM)
+E       prefect.exceptions.TerminationSignal
+
+.venv/lib/python3.12/site-packages/prefect/utilities/engine.py:174: TerminationSignal
+---------------------------- Captured stderr setup -----------------------------
+16:57:38.513 | INFO    | prefect - Starting temporary server on http://127.0.0.1:8625
+See https://docs.prefect.io/v3/concepts/server#how-to-guides for more information on running a dedicated Prefect server.
+------------------------------ Captured log setup ------------------------------
+INFO     prefect:server.py:881 Starting temporary server on http://127.0.0.1:8625
+See https://docs.prefect.io/v3/concepts/server#how-to-guides for more information on running a dedicated Prefect server.
+----------------------------- Captured stdout call -----------------------------
+16:57:48.365 hissing-dormouse
+16:57:48.423   bulky-hog
+16:57:48.451     Model Request: gpt-4o-510
+----------------------------- Captured stderr call -----------------------------
+16:57:48.365 | INFO    | prefect.engine - View at http://127.0.0.1:8625/runs/flow-run/4049d8a3-6d83-44ff-b674-1d199bf4408c
+16:57:48.386 | INFO    | Flow run 'hissing-dormouse' - Beginning flow run 'hissing-dormouse' for flow 'test_multiple_agents'
+16:57:48.387 | INFO    | Flow run 'hissing-dormouse' - View at http://127.0.0.1:8625/runs/flow-run/4049d8a3-6d83-44ff-b674-1d199bf4408c
+16:57:48.423 | INFO    | prefect.engine - View at http://127.0.0.1:8625/runs/flow-run/23dbf4bc-7362-4201-93ac-f7f6925c9026
+16:57:48.442 | INFO    | Flow run 'bulky-hog' - Beginning subflow run 'bulky-hog' for flow 'simple_agent Run'
+16:57:48.443 | INFO    | Flow run 'bulky-hog' - View at http://127.0.0.1:8625/runs/flow-run/23dbf4bc-7362-4201-93ac-f7f6925c9026
+16:57:49.116 | INFO    | Task run 'Model Request: gpt-4o-510' - Finished in state Completed()
+16:57:49.130 | INFO    | Flow run 'bulky-hog' - Finished in state Completed()
+------------------------------ Captured log call -------------------------------
+INFO     prefect.engine:flow_engine.py:1263 View at http://127.0.0.1:8625/runs/flow-run/4049d8a3-6d83-44ff-b674-1d199bf4408c
+INFO     prefect.flow_runs:flow_engine.py:1237 Beginning flow run 'hissing-dormouse' for flow 'test_multiple_agents'
+INFO     prefect.flow_runs:flow_engine.py:1242 View at http://127.0.0.1:8625/runs/flow-run/4049d8a3-6d83-44ff-b674-1d199bf4408c
+INFO     prefect.engine:flow_engine.py:1263 View at http://127.0.0.1:8625/runs/flow-run/23dbf4bc-7362-4201-93ac-f7f6925c9026
+INFO     prefect.flow_runs:flow_engine.py:1237 Beginning subflow run 'bulky-hog' for flow 'simple_agent Run'
+INFO     prefect.flow_runs:flow_engine.py:1242 View at http://127.0.0.1:8625/runs/flow-run/23dbf4bc-7362-4201-93ac-f7f6925c9026
+INFO     prefect.task_runs:task_engine.py:292 Finished in state Completed()
+INFO     prefect.flow_runs:flow_engine.py:1316 Finished in state Completed()
+--------------------------- Captured stderr teardown ---------------------------
+17:04:55.897 | ERROR   | Flow run 'hissing-dormouse' - Encountered exception during execution: PoolTimeout('')
+Traceback (most recent call last):
+  File "/Users/david/projects/forks/pydantic-ai-main/.venv/lib/python3.12/site-packages/httpx/_transports/default.py", line 101, in map_httpcore_exceptions
+    yield
+  File "/Users/david/projects/forks/pydantic-ai-main/.venv/lib/python3.12/site-packages/httpx/_transports/default.py", line 394, in handle_async_request
+    resp = await self._pool.handle_async_request(req)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/david/projects/forks/pydantic-ai-main/.venv/lib/python3.12/site-packages/httpcore/_async/connection_pool.py", line 256, in handle_async_request
+    raise exc from None
+  File "/Users/david/projects/forks/pydantic-ai-main/.venv/lib/python3.12/site-packages/httpcore/_async/connection_pool.py", line 232, in handle_async_request
+    connection = await pool_request.wait_for_connection(timeout=timeout)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/david/projects/forks/pydantic-ai-main/.venv/lib/python3.12/site-packages/httpcore/_async/connection_pool.py", line 35, in wait_for_connection
+    await self._connection_acquired.wait(timeout=timeout)
+  File "/Users/david/projects/forks/pydantic-ai-main/.venv/lib/python3.12/site-packages/httpcore/_synchronization.py", line 149, in wait
+    with map_exceptions(anyio_exc_map):
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/david/.local/share/uv/python/cpython-3.12.10-macos-aarch64-none/lib/python3.12/contextlib.py", line 158, in __exit__
+    self.gen.throw(value)
+  File "/Users/david/projects/forks/pydantic-ai-main/.venv/lib/python3.12/site-packages/httpcore/_exceptions.py", line 14, in map_exceptions
+    raise to_exc(exc) from exc
+httpcore.PoolTimeout
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/Users/david/projects/forks/pydantic-ai-main/.venv/lib/python3.12/site-packages/prefect/flow_engine.py", line 1357, in run_context
+    yield self
+  File "/Users/david/projects/forks/pydantic-ai-main/.venv/lib/python3.12/site-packages/prefect/flow_engine.py", line 1419, in run_flow_async
+    await engine.call_flow_fn()
+  File "/Users/david/projects/forks/pydantic-ai-main/.venv/lib/python3.12/site-packages/prefect/flow_engine.py", line 1371, in call_flow_fn
+    result = await call_with_parameters(self.flow.fn, self.parameters)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/david/projects/forks/pydantic-ai-main/tests/test_prefect.py", line 571, in run_multiple_agents
+    result2 = await complex_prefect_agent.run(
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/david/projects/forks/pydantic-ai-main/pydantic_ai_slim/pydantic_ai/durable_exec/prefect/_agent.py", line 303, in run
+    return await wrapped_run_flow()
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/david/projects/forks/pydantic-ai-main/.venv/lib/python3.12/site-packages/prefect/flow_engine.py", line 1416, in run_flow_async
+    async with engine.start():
+               ^^^^^^^^^^^^^^
+  File "/Users/david/.local/share/uv/python/cpython-3.12.10-macos-aarch64-none/lib/python3.12/contextlib.py", line 210, in __aenter__
+    return await anext(self.gen)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/david/projects/forks/pydantic-ai-main/.venv/lib/python3.12/site-packages/prefect/flow_engine.py", line 1334, in start
+    async with self.initialize_run():
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/david/.local/share/uv/python/cpython-3.12.10-macos-aarch64-none/lib/python3.12/contextlib.py", line 210, in __aenter__
+    return await anext(self.gen)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/david/projects/forks/pydantic-ai-main/.venv/lib/python3.12/site-packages/prefect/flow_engine.py", line 1259, in initialize_run
+    self.flow_run = await self.create_flow_run(self.client)
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/david/projects/forks/pydantic-ai-main/.venv/lib/python3.12/site-packages/prefect/flow_engine.py", line 1098, in create_flow_run
+    return await client.create_flow_run(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/david/projects/forks/pydantic-ai-main/.venv/lib/python3.12/site-packages/prefect/client/orchestration/_flow_runs/client.py", line 616, in create_flow_run
+    response = await self.request("POST", "/flow_runs/", json=flow_run_create_json)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/david/projects/forks/pydantic-ai-main/.venv/lib/python3.12/site-packages/prefect/client/orchestration/base.py", line 53, in request
+    return await self._client.send(request)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/david/projects/forks/pydantic-ai-main/.venv/lib/python3.12/site-packages/prefect/client/base.py", line 348, in send
+    response = await self._send_with_retry(
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/david/projects/forks/pydantic-ai-main/.venv/lib/python3.12/site-packages/prefect/client/base.py", line 268, in _send_with_retry
+    response = await send(request, *send_args, **send_kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/david/projects/forks/pydantic-ai-main/.venv/lib/python3.12/site-packages/httpx/_client.py", line 1629, in send
+    response = await self._send_handling_auth(
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/david/projects/forks/pydantic-ai-main/.venv/lib/python3.12/site-packages/httpx/_client.py", line 1657, in _send_handling_auth
+    response = await self._send_handling_redirects(
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/david/projects/forks/pydantic-ai-main/.venv/lib/python3.12/site-packages/httpx/_client.py", line 1694, in _send_handling_redirects
+    response = await self._send_single_request(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/david/projects/forks/pydantic-ai-main/.venv/lib/python3.12/site-packages/httpx/_client.py", line 1730, in _send_single_request
+    response = await transport.handle_async_request(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/david/projects/forks/pydantic-ai-main/.venv/lib/python3.12/site-packages/httpx/_transports/default.py", line 393, in handle_async_request
+    with map_httpcore_exceptions():
+         ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/david/.local/share/uv/python/cpython-3.12.10-macos-aarch64-none/lib/python3.12/contextlib.py", line 158, in __exit__
+    self.gen.throw(value)
+  File "/Users/david/projects/forks/pydantic-ai-main/.venv/lib/python3.12/site-packages/httpx/_transports/default.py", line 118, in map_httpcore_exceptions
+    raise mapped_exc(message) from exc
+httpx.PoolTimeout
+--- Error logging to API ---
+All connection attempts failed17:11:53.587 | ERROR   | Flow run 'hissing-dormouse' - Finished in state Running()
+--- Error logging to API ---
+All connection attempts failed17:11:55.103 | INFO    | prefect - Stopping temporary server on http://127.0.0.1:8625
+---------------------------- Captured log teardown -----------------------------
+ERROR    prefect.flow_runs:flow_engine.py:1361 Encountered exception during execution: PoolTimeout('')
+Traceback (most recent call last):
+  File "/Users/david/projects/forks/pydantic-ai-main/.venv/lib/python3.12/site-packages/httpx/_transports/default.py", line 101, in map_httpcore_exceptions
+    yield
+  File "/Users/david/projects/forks/pydantic-ai-main/.venv/lib/python3.12/site-packages/httpx/_transports/default.py", line 394, in handle_async_request
+    resp = await self._pool.handle_async_request(req)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/david/projects/forks/pydantic-ai-main/.venv/lib/python3.12/site-packages/httpcore/_async/connection_pool.py", line 256, in handle_async_request
+    raise exc from None
+  File "/Users/david/projects/forks/pydantic-ai-main/.venv/lib/python3.12/site-packages/httpcore/_async/connection_pool.py", line 232, in handle_async_request
+    connection = await pool_request.wait_for_connection(timeout=timeout)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/david/projects/forks/pydantic-ai-main/.venv/lib/python3.12/site-packages/httpcore/_async/connection_pool.py", line 35, in wait_for_connection
+    await self._connection_acquired.wait(timeout=timeout)
+  File "/Users/david/projects/forks/pydantic-ai-main/.venv/lib/python3.12/site-packages/httpcore/_synchronization.py", line 149, in wait
+    with map_exceptions(anyio_exc_map):
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/david/.local/share/uv/python/cpython-3.12.10-macos-aarch64-none/lib/python3.12/contextlib.py", line 158, in __exit__
+    self.gen.throw(value)
+  File "/Users/david/projects/forks/pydantic-ai-main/.venv/lib/python3.12/site-packages/httpcore/_exceptions.py", line 14, in map_exceptions
+    raise to_exc(exc) from exc
+httpcore.PoolTimeout
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/Users/david/projects/forks/pydantic-ai-main/.venv/lib/python3.12/site-packages/prefect/flow_engine.py", line 1357, in run_context
+    yield self
+  File "/Users/david/projects/forks/pydantic-ai-main/.venv/lib/python3.12/site-packages/prefect/flow_engine.py", line 1419, in run_flow_async
+    await engine.call_flow_fn()
+  File "/Users/david/projects/forks/pydantic-ai-main/.venv/lib/python3.12/site-packages/prefect/flow_engine.py", line 1371, in call_flow_fn
+    result = await call_with_parameters(self.flow.fn, self.parameters)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/david/projects/forks/pydantic-ai-main/tests/test_prefect.py", line 571, in run_multiple_agents
+    result2 = await complex_prefect_agent.run(
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/david/projects/forks/pydantic-ai-main/pydantic_ai_slim/pydantic_ai/durable_exec/prefect/_agent.py", line 303, in run
+    return await wrapped_run_flow()
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/david/projects/forks/pydantic-ai-main/.venv/lib/python3.12/site-packages/prefect/flow_engine.py", line 1416, in run_flow_async
+    async with engine.start():
+               ^^^^^^^^^^^^^^
+  File "/Users/david/.local/share/uv/python/cpython-3.12.10-macos-aarch64-none/lib/python3.12/contextlib.py", line 210, in __aenter__
+    return await anext(self.gen)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/david/projects/forks/pydantic-ai-main/.venv/lib/python3.12/site-packages/prefect/flow_engine.py", line 1334, in start
+    async with self.initialize_run():
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/david/.local/share/uv/python/cpython-3.12.10-macos-aarch64-none/lib/python3.12/contextlib.py", line 210, in __aenter__
+    return await anext(self.gen)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/david/projects/forks/pydantic-ai-main/.venv/lib/python3.12/site-packages/prefect/flow_engine.py", line 1259, in initialize_run
+    self.flow_run = await self.create_flow_run(self.client)
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/david/projects/forks/pydantic-ai-main/.venv/lib/python3.12/site-packages/prefect/flow_engine.py", line 1098, in create_flow_run
+    return await client.create_flow_run(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/david/projects/forks/pydantic-ai-main/.venv/lib/python3.12/site-packages/prefect/client/orchestration/_flow_runs/client.py", line 616, in create_flow_run
+    response = await self.request("POST", "/flow_runs/", json=flow_run_create_json)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/david/projects/forks/pydantic-ai-main/.venv/lib/python3.12/site-packages/prefect/client/orchestration/base.py", line 53, in request
+    return await self._client.send(request)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/david/projects/forks/pydantic-ai-main/.venv/lib/python3.12/site-packages/prefect/client/base.py", line 348, in send
+    response = await self._send_with_retry(
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/david/projects/forks/pydantic-ai-main/.venv/lib/python3.12/site-packages/prefect/client/base.py", line 268, in _send_with_retry
+    response = await send(request, *send_args, **send_kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/david/projects/forks/pydantic-ai-main/.venv/lib/python3.12/site-packages/httpx/_client.py", line 1629, in send
+    response = await self._send_handling_auth(
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/david/projects/forks/pydantic-ai-main/.venv/lib/python3.12/site-packages/httpx/_client.py", line 1657, in _send_handling_auth
+    response = await self._send_handling_redirects(
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/david/projects/forks/pydantic-ai-main/.venv/lib/python3.12/site-packages/httpx/_client.py", line 1694, in _send_handling_redirects
+    response = await self._send_single_request(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/david/projects/forks/pydantic-ai-main/.venv/lib/python3.12/site-packages/httpx/_client.py", line 1730, in _send_single_request
+    response = await transport.handle_async_request(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/david/projects/forks/pydantic-ai-main/.venv/lib/python3.12/site-packages/httpx/_transports/default.py", line 393, in handle_async_request
+    with map_httpcore_exceptions():
+         ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/david/.local/share/uv/python/cpython-3.12.10-macos-aarch64-none/lib/python3.12/contextlib.py", line 158, in __exit__
+    self.gen.throw(value)
+  File "/Users/david/projects/forks/pydantic-ai-main/.venv/lib/python3.12/site-packages/httpx/_transports/default.py", line 118, in map_httpcore_exceptions
+    raise mapped_exc(message) from exc
+httpx.PoolTimeout
+ERROR    prefect.flow_runs:flow_engine.py:1316 Finished in state Running()
+INFO     prefect:server.py:960 Stopping temporary server on http://127.0.0.1:8625
+                              Summary of Failures                               
+┏━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━┓
+┃               ┃               ┃  Function     ┃              ┃               ┃
+┃  File         ┃  Function     ┃  Line         ┃  Error Line  ┃  Error        ┃
+┡━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━┩
+│  tests/test…  │  test_multi…  │  565          │  158         │  Terminatio…  │
+└───────────────┴───────────────┴───────────────┴──────────────┴───────────────┘
+Results (859.93s):
+         1 failed
+directs
+    response = await self._send_single_request(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/david/projects/forks/pydantic-ai-main/.venv/lib/python3.12/site-packages/httpx/_client.py", line 1730, in _send_single_request
+    response = await transport.handle_async_request(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/david/projects/forks/pydantic-ai-main/.venv/lib/python3.12/site-packages/httpx/_transports/default.py", line 393, in handle_async_request
+    with map_httpcore_exceptions():
+         ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/david/.local/share/uv/python/cpython-3.12.10-macos-aarch64-none/lib/python3.12/contextlib.py", line 158, in __exit__
+    self.gen.throw(value)
+  File "/Users/david/projects/forks/pydantic-ai-main/.venv/lib/python3.12/site-packages/httpx/_transports/default.py", line 118, in map_httpcore_exceptions
+    raise mapped_exc(message) from exc
+httpx.PoolTimeout
+17:07:23.351 | ERROR   | Flow run 'blue-clam' - Encountered exception during execution: PoolTimeout('')
+Traceback (most recent call last):
+  File "/Users/david/projects/forks/pydantic-ai-main/.venv/lib/python3.12/site-packages/httpx/_transports/default.py", line 101, in map_httpcore_exceptions
+    yield
+  File "/Users/david/projects/forks/pydantic-ai-main/.venv/lib/python3.12/site-packages/httpx/_transports/default.py", line 394, in handle_async_request
+    resp = await self._pool.handle_async_request(req)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/david/projects/forks/pydantic-ai-main/.venv/lib/python3.12/site-packages/httpcore/_async/connection_pool.py", line 256, in handle_async_request
+    raise exc from None
+  File "/Users/david/projects/forks/pydantic-ai-main/.venv/lib/python3.12/site-packages/httpcore/_async/connection_pool.py", line 232, in handle_async_request
+    connection = await pool_request.wait_for_connection(timeout=timeout)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/david/projects/forks/pydantic-ai-main/.venv/lib/python3.12/site-packages/httpcore/_async/connection_pool.py", line 35, in wait_for_connection
+    await self._connection_acquired.wait(timeout=timeout)
+  File "/Users/david/projects/forks/pydantic-ai-main/.venv/lib/python3.12/site-packages/httpcore/_synchronization.py", line 149, in wait
+    with map_exceptions(anyio_exc_map):
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/david/.local/share/uv/python/cpython-3.12.10-macos-aarch64-none/lib/python3.12/contextlib.py", line 158, in __exit__
+    self.gen.throw(value)
+  File "/Users/david/projects/forks/pydantic-ai-main/.venv/lib/python3.12/site-packages/httpcore/_exceptions.py", line 14, in map_exceptions
+    raise to_exc(exc) from exc
+httpcore.PoolTimeout
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/Users/david/projects/forks/pydantic-ai-main/.venv/lib/python3.12/site-packages/prefect/flow_engine.py", line 1357, in run_context
+    yield self
+  File "/Users/david/projects/forks/pydantic-ai-main/.venv/lib/python3.12/site-packages/prefect/flow_engine.py", line 1419, in run_flow_async
+    await engine.call_flow_fn()
+  File "/Users/david/projects/forks/pydantic-ai-main/.venv/lib/python3.12/site-packages/prefect/flow_engine.py", line 1371, in call_flow_fn
+    result = await call_with_parameters(self.flow.fn, self.parameters)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/david/projects/forks/pydantic-ai-main/tests/test_prefect.py", line 571, in run_multiple_agents
+    result2 = await complex_prefect_agent.run(
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/david/projects/forks/pydantic-ai-main/pydantic_ai_slim/pydantic_ai/durable_exec/prefect/_agent.py", line 303, in run
+    return await wrapped_run_flow()
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/david/projects/forks/pydantic-ai-main/.venv/lib/python3.12/site-packages/prefect/flow_engine.py", line 1416, in run_flow_async
+    async with engine.start():
+               ^^^^^^^^^^^^^^
+  File "/Users/david/.local/share/uv/python/cpython-3.12.10-macos-aarch64-none/lib/python3.12/contextlib.py", line 210, in __aenter__
+    return await anext(self.gen)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/david/projects/forks/pydantic-ai-main/.venv/lib/python3.12/site-packages/prefect/flow_engine.py", line 1334, in start
+    async with self.initialize_run():
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/david/.local/share/uv/python/cpython-3.12.10-macos-aarch64-none/lib/python3.12/contextlib.py", line 210, in __aenter__
+    return await anext(self.gen)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/david/projects/forks/pydantic-ai-main/.venv/lib/python3.12/site-packages/prefect/flow_engine.py", line 1259, in initialize_run
+    self.flow_run = await self.create_flow_run(self.client)
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/david/projects/forks/pydantic-ai-main/.venv/lib/python3.12/site-packages/prefect/flow_engine.py", line 1098, in create_flow_run
+    return await client.create_flow_run(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/david/projects/forks/pydantic-ai-main/.venv/lib/python3.12/site-packages/prefect/client/orchestration/_flow_runs/client.py", line 616, in create_flow_run
+    response = await self.request("POST", "/flow_runs/", json=flow_run_create_json)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/david/projects/forks/pydantic-ai-main/.venv/lib/python3.12/site-packages/prefect/client/orchestration/base.py", line 53, in request
+    return await self._client.send(request)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/david/projects/forks/pydantic-ai-main/.venv/lib/python3.12/site-packages/prefect/client/base.py", line 348, in send
+    response = await self._send_with_retry(
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/david/projects/forks/pydantic-ai-main/.venv/lib/python3.12/site-packages/prefect/client/base.py", line 268, in _send_with_retry
+    response = await send(request, *send_args, **send_kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/david/projects/forks/pydantic-ai-main/.venv/lib/python3.12/site-packages/httpx/_client.py", line 1629, in send
+    response = await self._send_handling_auth(
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/david/projects/forks/pydantic-ai-main/.venv/lib/python3.12/site-packages/httpx/_client.py", line 1657, in _send_handling_auth
+    response = await self._send_handling_redirects(
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/david/projects/forks/pydantic-ai-main/.venv/lib/python3.12/site-packages/httpx/_client.py", line 1694, in _send_handling_redirects
+    response = await self._send_single_request(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/david/projects/forks/pydantic-ai-main/.venv/lib/python3.12/site-packages/httpx/_client.py", line 1730, in _send_single_request
+    response = await transport.handle_async_request(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/david/projects/forks/pydantic-ai-main/.venv/lib/python3.12/site-packages/httpx/_transports/default.py", line 393, in handle_async_request
+    with map_httpcore_exceptions():
+         ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/david/.local/share/uv/python/cpython-3.12.10-macos-aarch64-none/lib/python3.12/contextlib.py", line 158, in __exit__
+    self.gen.throw(value)
+  File "/Users/david/projects/forks/pydantic-ai-main/.venv/lib/python3.12/site-packages/httpx/_transports/default.py", line 118, in map_httpcore_exceptions
+    raise mapped_exc(message) from exc
+httpx.PoolTimeout
+--- Error logging to API ---
+All connection attempts failed17:08:23.379 | DEBUG   | prefect.client - Encountered retryable exception during request. Another attempt will be made in 2.31702700533148s. This is attempt 1/6.
+Traceback (most recent call last):
+  File "/Users/david/projects/forks/pydantic-ai-main/.venv/lib/python3.12/site-packages/httpx/_transports/default.py", line 101, in map_httpcore_exceptions
+    yield
+  File "/Users/david/projects/forks/pydantic-ai-main/.venv/lib/python3.12/site-packages/httpx/_transports/default.py", line 394, in handle_async_request
+    resp = await self._pool.handle_async_request(req)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/david/projects/forks/pydantic-ai-main/.venv/lib/python3.12/site-packages/httpcore/_async/connection_pool.py", line 256, in handle_async_request
+    raise exc from None
+  File "/Users/david/projects/forks/pydantic-ai-main/.venv/lib/python3.12/site-packages/httpcore/_async/connection_pool.py", line 232, in handle_async_request
+    connection = await pool_request.wait_for_connection(timeout=timeout)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/david/projects/forks/pydantic-ai-main/.venv/lib/python3.12/site-packages/httpcore/_async/connection_pool.py", line 35, in wait_for_connection
+    await self._connection_acquired.wait(timeout=timeout)
+  File "/Users/david/projects/forks/pydantic-ai-main/.venv/lib/python3.12/site-packages/httpcore/_synchronization.py", line 149, in wait
+    with map_exceptions(anyio_exc_map):
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/david/.local/share/uv/python/cpython-3.12.10-macos-aarch64-none/lib/python3.12/contextlib.py", line 158, in __exit__
+    self.gen.throw(value)
+  File "/Users/david/projects/forks/pydantic-ai-main/.venv/lib/python3.12/site-packages/httpcore/_exceptions.py", line 14, in map_exceptions
+    raise to_exc(exc) from exc
+httpcore.PoolTimeout
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/Users/david/projects/forks/pydantic-ai-main/.venv/lib/python3.12/site-packages/prefect/client/base.py", line 268, in _send_with_retry
+    response = await send(request, *send_args, **send_kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/david/projects/forks/pydantic-ai-main/.venv/lib/python3.12/site-packages/httpx/_client.py", line 1629, in send
+    response = await self._send_handling_auth(
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/david/projects/forks/pydantic-ai-main/.venv/lib/python3.12/site-packages/httpx/_client.py", line 1657, in _send_handling_auth
+    response = await self._send_handling_redirects(
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/david/projects/forks/pydantic-ai-main/.venv/lib/python3.12/site-packages/httpx/_client.py", line 1694, in _send_handling_redirects
+    response = await self._send_single_request(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/david/projects/forks/pydantic-ai-main/.venv/lib/python3.12/site-packages/httpx/_client.py", line 1730, in _send_single_request
+    response = await transport.handle_async_request(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/david/projects/forks/pydantic-ai-main/.venv/lib/python3.12/site-packages/httpx/_transports/default.py", line 393, in handle_async_request
+    with map_httpcore_exceptions():
+         ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/david/.local/share/uv/python/cpython-3.12.10-macos-aarch64-none/lib/python3.12/contextlib.py", line 158, in __exit__
+    self.gen.throw(value)
+  File "/Users/david/projects/forks/pydantic-ai-main/.venv/lib/python3.12/site-packages/httpx/_transports/default.py", line 118, in map_httpcore_exceptions
+    raise mapped_exc(message) from exc
+httpx.PoolTimeout
+17:09:25.709 | DEBUG   | prefect.client - Encountered retryable exception during request. Another attempt will be made in 4.2493640676678925s. This is attempt 2/6.
+Traceback (most recent call last):
+  File "/Users/david/projects/forks/pydantic-ai-main/.venv/lib/python3.12/site-packages/httpx/_transports/default.py", line 101, in map_httpcore_exceptions
+    yield
+  File "/Users/david/projects/forks/pydantic-ai-main/.venv/lib/python3.12/site-packages/httpx/_transports/default.py", line 394, in handle_async_request
+    resp = await self._pool.handle_async_request(req)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/david/projects/forks/pydantic-ai-main/.venv/lib/python3.12/site-packages/httpcore/_async/connection_pool.py", line 256, in handle_async_request
+    raise exc from None
+  File "/Users/david/projects/forks/pydantic-ai-main/.venv/lib/python3.12/site-packages/httpcore/_async/connection_pool.py", line 232, in handle_async_request
+    connection = await pool_request.wait_for_connection(timeout=timeout)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/david/projects/forks/pydantic-ai-main/.venv/lib/python3.12/site-packages/httpcore/_async/connection_pool.py", line 35, in wait_for_connection
+    await self._connection_acquired.wait(timeout=timeout)
+  File "/Users/david/projects/forks/pydantic-ai-main/.venv/lib/python3.12/site-packages/httpcore/_synchronization.py", line 149, in wait
+    with map_exceptions(anyio_exc_map):
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/david/.local/share/uv/python/cpython-3.12.10-macos-aarch64-none/lib/python3.12/contextlib.py", line 158, in __exit__
+    self.gen.throw(value)
+  File "/Users/david/projects/forks/pydantic-ai-main/.venv/lib/python3.12/site-packages/httpcore/_exceptions.py", line 14, in map_exceptions
+    raise to_exc(exc) from exc
+httpcore.PoolTimeout
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/Users/david/projects/forks/pydantic-ai-main/.venv/lib/python3.12/site-packages/prefect/client/base.py", line 268, in _send_with_retry
+    response = await send(request, *send_args, **send_kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/david/projects/forks/pydantic-ai-main/.venv/lib/python3.12/site-packages/httpx/_client.py", line 1629, in send
+    response = await self._send_handling_auth(
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/david/projects/forks/pydantic-ai-main/.venv/lib/python3.12/site-packages/httpx/_client.py", line 1657, in _send_handling_auth
+    response = await self._send_handling_redirects(
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/david/projects/forks/pydantic-ai-main/.venv/lib/python3.12/site-packages/httpx/_client.py", line 1694, in _send_handling_redirects
+    response = await self._send_single_request(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/david/projects/forks/pydantic-ai-main/.venv/lib/python3.12/site-packages/httpx/_client.py", line 1730, in _send_single_request
+    response = await transport.handle_async_request(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/david/projects/forks/pydantic-ai-main/.venv/lib/python3.12/site-packages/httpx/_transports/default.py", line 393, in handle_async_request
+    with map_httpcore_exceptions():
+         ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/david/.local/share/uv/python/cpython-3.12.10-macos-aarch64-none/lib/python3.12/contextlib.py", line 158, in __exit__
+    self.gen.throw(value)
+  File "/Users/david/projects/forks/pydantic-ai-main/.venv/lib/python3.12/site-packages/httpx/_transports/default.py", line 118, in map_httpcore_exceptions
+    raise mapped_exc(message) from exc
+httpx.PoolTimeout
+17:10:29.967 | DEBUG   | prefect.client - Encountered retryable exception during request. Another attempt will be made in 7.87411326915733s. This is attempt 3/6.
+Traceback (most recent call last):
+  File "/Users/david/projects/forks/pydantic-ai-main/.venv/lib/python3.12/site-packages/httpx/_transports/default.py", line 101, in map_httpcore_exceptions
+    yield
+  File "/Users/david/projects/forks/pydantic-ai-main/.venv/lib/python3.12/site-packages/httpx/_transports/default.py", line 394, in handle_async_request
+    resp = await self._pool.handle_async_request(req)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/david/projects/forks/pydantic-ai-main/.venv/lib/python3.12/site-packages/httpcore/_async/connection_pool.py", line 256, in handle_async_request
+    raise exc from None
+  File "/Users/david/projects/forks/pydantic-ai-main/.venv/lib/python3.12/site-packages/httpcore/_async/connection_pool.py", line 232, in handle_async_request
+    connection = await pool_request.wait_for_connection(timeout=timeout)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/david/projects/forks/pydantic-ai-main/.venv/lib/python3.12/site-packages/httpcore/_async/connection_pool.py", line 35, in wait_for_connection
+    await self._connection_acquired.wait(timeout=timeout)
+  File "/Users/david/projects/forks/pydantic-ai-main/.venv/lib/python3.12/site-packages/httpcore/_synchronization.py", line 149, in wait
+    with map_exceptions(anyio_exc_map):
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/david/.local/share/uv/python/cpython-3.12.10-macos-aarch64-none/lib/python3.12/contextlib.py", line 158, in __exit__
+    self.gen.throw(value)
+  File "/Users/david/projects/forks/pydantic-ai-main/.venv/lib/python3.12/site-packages/httpcore/_exceptions.py", line 14, in map_exceptions
+    raise to_exc(exc) from exc
+httpcore.PoolTimeout
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/Users/david/projects/forks/pydantic-ai-main/.venv/lib/python3.12/site-packages/prefect/client/base.py", line 268, in _send_with_retry
+    response = await send(request, *send_args, **send_kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/david/projects/forks/pydantic-ai-main/.venv/lib/python3.12/site-packages/httpx/_client.py", line 1629, in send
+    response = await self._send_handling_auth(
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/david/projects/forks/pydantic-ai-main/.venv/lib/python3.12/site-packages/httpx/_client.py", line 1657, in _send_handling_auth
+    response = await self._send_handling_redirects(
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/david/projects/forks/pydantic-ai-main/.venv/lib/python3.12/site-packages/httpx/_client.py", line 1694, in _send_handling_redirects
+    response = await self._send_single_request(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/david/projects/forks/pydantic-ai-main/.venv/lib/python3.12/site-packages/httpx/_client.py", line 1730, in _send_single_request
+    response = await transport.handle_async_request(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/david/projects/forks/pydantic-ai-main/.venv/lib/python3.12/site-packages/httpx/_transports/default.py", line 393, in handle_async_request
+    with map_httpcore_exceptions():
+         ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/david/.local/share/uv/python/cpython-3.12.10-macos-aarch64-none/lib/python3.12/contextlib.py", line 158, in __exit__
+    self.gen.throw(value)
+  File "/Users/david/projects/forks/pydantic-ai-main/.venv/lib/python3.12/site-packages/httpx/_transports/default.py", line 118, in map_httpcore_exceptions
+    raise mapped_exc(message) from exc
+httpx.PoolTimeout
+17:11:37.858 | DEBUG   | prefect.client - Encountered retryable exception during request. Another attempt will be made in 15.853056255891465s. This is attempt 4/6.
+Traceback (most recent call last):
+  File "/Users/david/projects/forks/pydantic-ai-main/.venv/lib/python3.12/site-packages/httpx/_transports/default.py", line 101, in map_httpcore_exceptions
+    yield
+  File "/Users/david/projects/forks/pydantic-ai-main/.venv/lib/python3.12/site-packages/httpx/_transports/default.py", line 394, in handle_async_request
+    resp = await self._pool.handle_async_request(req)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/david/projects/forks/pydantic-ai-main/.venv/lib/python3.12/site-packages/httpcore/_async/connection_pool.py", line 256, in handle_async_request
+    raise exc from None
+  File "/Users/david/projects/forks/pydantic-ai-main/.venv/lib/python3.12/site-packages/httpcore/_async/connection_pool.py", line 232, in handle_async_request
+    connection = await pool_request.wait_for_connection(timeout=timeout)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/david/projects/forks/pydantic-ai-main/.venv/lib/python3.12/site-packages/httpcore/_async/connection_pool.py", line 35, in wait_for_connection
+    await self._connection_acquired.wait(timeout=timeout)
+  File "/Users/david/projects/forks/pydantic-ai-main/.venv/lib/python3.12/site-packages/httpcore/_synchronization.py", line 149, in wait
+    with map_exceptions(anyio_exc_map):
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/david/.local/share/uv/python/cpython-3.12.10-macos-aarch64-none/lib/python3.12/contextlib.py", line 158, in __exit__
+    self.gen.throw(value)
+  File "/Users/david/projects/forks/pydantic-ai-main/.venv/lib/python3.12/site-packages/httpcore/_exceptions.py", line 14, in map_exceptions
+    raise to_exc(exc) from exc
+httpcore.PoolTimeout
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/Users/david/projects/forks/pydantic-ai-main/.venv/lib/python3.12/site-packages/prefect/client/base.py", line 268, in _send_with_retry
+    response = await send(request, *send_args, **send_kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/david/projects/forks/pydantic-ai-main/.venv/lib/python3.12/site-packages/httpx/_client.py", line 1629, in send
+    response = await self._send_handling_auth(
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/david/projects/forks/pydantic-ai-main/.venv/lib/python3.12/site-packages/httpx/_client.py", line 1657, in _send_handling_auth
+    response = await self._send_handling_redirects(
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/david/projects/forks/pydantic-ai-main/.venv/lib/python3.12/site-packages/httpx/_client.py", line 1694, in _send_handling_redirects
+    response = await self._send_single_request(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/david/projects/forks/pydantic-ai-main/.venv/lib/python3.12/site-packages/httpx/_client.py", line 1730, in _send_single_request
+    response = await transport.handle_async_request(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/david/projects/forks/pydantic-ai-main/.venv/lib/python3.12/site-packages/httpx/_transports/default.py", line 393, in handle_async_request
+    with map_httpcore_exceptions():
+         ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/david/.local/share/uv/python/cpython-3.12.10-macos-aarch64-none/lib/python3.12/contextlib.py", line 158, in __exit__
+    self.gen.throw(value)
+  File "/Users/david/projects/forks/pydantic-ai-main/.venv/lib/python3.12/site-packages/httpx/_transports/default.py", line 118, in map_httpcore_exceptions
+    raise mapped_exc(message) from exc
+httpx.PoolTimeout
+17:12:53.718 | DEBUG   | prefect.client - Encountered retryable exception during request. Another attempt will be made in 31.084348040775126s. This is attempt 5/6.
+Traceback (most recent call last):
+  File "/Users/david/projects/forks/pydantic-ai-main/.venv/lib/python3.12/site-packages/httpx/_transports/default.py", line 101, in map_httpcore_exceptions
+    yield
+  File "/Users/david/projects/forks/pydantic-ai-main/.venv/lib/python3.12/site-packages/httpx/_transports/default.py", line 394, in handle_async_request
+    resp = await self._pool.handle_async_request(req)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/david/projects/forks/pydantic-ai-main/.venv/lib/python3.12/site-packages/httpcore/_async/connection_pool.py", line 256, in handle_async_request
+    raise exc from None
+  File "/Users/david/projects/forks/pydantic-ai-main/.venv/lib/python3.12/site-packages/httpcore/_async/connection_pool.py", line 232, in handle_async_request
+    connection = await pool_request.wait_for_connection(timeout=timeout)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/david/projects/forks/pydantic-ai-main/.venv/lib/python3.12/site-packages/httpcore/_async/connection_pool.py", line 35, in wait_for_connection
+    await self._connection_acquired.wait(timeout=timeout)
+  File "/Users/david/projects/forks/pydantic-ai-main/.venv/lib/python3.12/site-packages/httpcore/_synchronization.py", line 149, in wait
+    with map_exceptions(anyio_exc_map):
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/david/.local/share/uv/python/cpython-3.12.10-macos-aarch64-none/lib/python3.12/contextlib.py", line 158, in __exit__
+    self.gen.throw(value)
+  File "/Users/david/projects/forks/pydantic-ai-main/.venv/lib/python3.12/site-packages/httpcore/_exceptions.py", line 14, in map_exceptions
+    raise to_exc(exc) from exc
+httpcore.PoolTimeout
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/Users/david/projects/forks/pydantic-ai-main/.venv/lib/python3.12/site-packages/prefect/client/base.py", line 268, in _send_with_retry
+    response = await send(request, *send_args, **send_kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/david/projects/forks/pydantic-ai-main/.venv/lib/python3.12/site-packages/httpx/_client.py", line 1629, in send
+    response = await self._send_handling_auth(
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/david/projects/forks/pydantic-ai-main/.venv/lib/python3.12/site-packages/httpx/_client.py", line 1657, in _send_handling_auth
+    response = await self._send_handling_redirects(
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/david/projects/forks/pydantic-ai-main/.venv/lib/python3.12/site-packages/httpx/_client.py", line 1694, in _send_handling_redirects
+    response = await self._send_single_request(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/david/projects/forks/pydantic-ai-main/.venv/lib/python3.12/site-packages/httpx/_client.py", line 1730, in _send_single_request
+    response = await transport.handle_async_request(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/david/projects/forks/pydantic-ai-main/.venv/lib/python3.12/site-packages/httpx/_transports/default.py", line 393, in handle_async_request
+    with map_httpcore_exceptions():
+         ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/david/.local/share/uv/python/cpython-3.12.10-macos-aarch64-none/lib/python3.12/contextlib.py", line 158, in __exit__
+    self.gen.throw(value)
+  File "/Users/david/projects/forks/pydantic-ai-main/.venv/lib/python3.12/site-packages/httpx/_transports/default.py", line 118, in map_httpcore_exceptions
+    raise mapped_exc(message) from exc
+httpx.PoolTimeout
+17:14:24.755 | DEBUG   | prefect.task_runner.threadpool - Stopping task runner
+17:14:24.765 | ERROR   | Flow run 'blue-clam' - Finished in state Running()
+--- Error logging to API ---
+All connection attempts failed17:14:26.281 | INFO    | prefect - Stopping temporary server on http://127.0.0.1:8224
+
+tests/test_prefect.py:564 test_multiple_agents - prefect.exceptions.…
+=================================== FAILURES ===================================
+_____________________________ test_multiple_agents _____________________________
+
+self = <_UnixSelectorEventLoop running=False closed=False debug=False>
+
+    def run_forever(self):
+        """Run until stop() is called."""
+        self._check_closed()
+        self._check_running()
+        self._set_coroutine_origin_tracking(self._debug)
+    
+        old_agen_hooks = sys.get_asyncgen_hooks()
+        try:
+            self._thread_id = threading.get_ident()
+            sys.set_asyncgen_hooks(firstiter=self._asyncgen_firstiter_hook,
+                                   finalizer=self._asyncgen_finalizer_hook)
+    
+            events._set_running_loop(self)
+            while True:
+>               self._run_once()
+
+../../../.local/share/uv/python/cpython-3.12.10-macos-aarch64-none/lib/python3.12/asyncio/base_events.py:645: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+../../../.local/share/uv/python/cpython-3.12.10-macos-aarch64-none/lib/python3.12/asyncio/base_events.py:1961: in _run_once
+    event_list = self._selector.select(timeout)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+../../../.local/share/uv/python/cpython-3.12.10-macos-aarch64-none/lib/python3.12/selectors.py:566: in select
+    kev_list = self._selector.control(None, max_ev, timeout)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+args = (15, <frame at 0x1332c4e10, file '/Users/david/.local/share/uv/python/cpython-3.12.10-macos-aarch64-none/lib/python3.12/selectors.py', line 567, code select>)
+
+    def cancel_flow_run(*args: object) -> NoReturn:
+>       raise TerminationSignal(signal=signal.SIGTERM)
+E       prefect.exceptions.TerminationSignal
+
+.venv/lib/python3.12/site-packages/prefect/utilities/engine.py:174: TerminationSignal
+
+During handling of the above exception, another exception occurred:
+
+pyfuncitem = <Function test_multiple_agents>
+
+    @pytest.hookimpl(tryfirst=True)
+    def pytest_pyfunc_call(pyfuncitem: Any) -> bool | None:
+        def run_with_hypothesis(**kwargs: Any) -> None:
+            with get_runner(backend_name, backend_options) as runner:
+                runner.run_test(original_func, kwargs)
+    
+        backend = pyfuncitem.funcargs.get("anyio_backend")
+        if backend:
+            backend_name, backend_options = extract_backend_and_options(backend)
+    
+            if hasattr(pyfuncitem.obj, "hypothesis"):
+                # Wrap the inner test function unless it's already wrapped
+                original_func = pyfuncitem.obj.hypothesis.inner_test
+                if original_func.__qualname__ != run_with_hypothesis.__qualname__:
+                    if iscoroutinefunction(original_func):
+                        pyfuncitem.obj.hypothesis.inner_test = run_with_hypothesis
+    
+                return None
+    
+            if iscoroutinefunction(pyfuncitem.obj):
+                funcargs = pyfuncitem.funcargs
+                testargs = {arg: funcargs[arg] for arg in pyfuncitem._fixtureinfo.argnames}
+                with get_runner(backend_name, backend_options) as runner:
+                    try:
+>                       runner.run_test(pyfuncitem.obj, testargs)
+
+.venv/lib/python3.12/site-packages/anyio/pytest_plugin.py:160: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+.venv/lib/python3.12/site-packages/anyio/_backends/_asyncio.py:2266: in run_test
+    self.get_loop().run_until_complete(
+../../../.local/share/uv/python/cpython-3.12.10-macos-aarch64-none/lib/python3.12/asyncio/base_events.py:678: in run_until_complete
+    self.run_forever()
+../../../.local/share/uv/python/cpython-3.12.10-macos-aarch64-none/lib/python3.12/asyncio/base_events.py:653: in run_forever
+    sys.set_asyncgen_hooks(*old_agen_hooks)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+args = (15, <frame at 0x1330bcb80, file '/Users/david/.local/share/uv/python/cpython-3.12.10-macos-aarch64-none/lib/python3.12/asyncio/base_events.py', line 653, code run_forever>)
+
+    def cancel_flow_run(*args: object) -> NoReturn:
+>       raise TerminationSignal(signal=signal.SIGTERM)
+E       prefect.exceptions.TerminationSignal
+
+.venv/lib/python3.12/site-packages/prefect/utilities/engine.py:174: TerminationSignal
+------------------------------ Captured log setup ------------------------------
+INFO     prefect:server.py:881 Starting temporary server on http://127.0.0.1:8224
+See https://docs.prefect.io/v3/concepts/server#how-to-guides for more information on running a dedicated Prefect server.
+------------------------------ Captured log call -------------------------------
+DEBUG    prefect.client:__init__.py:1098 Connecting to API at http://127.0.0.1:8224/api/
+INFO     prefect.engine:flow_engine.py:1263 View at http://127.0.0.1:8224/runs/flow-run/6eec2e1b-6988-48a4-8821-38a5b783aec1
+DEBUG    prefect.task_runner.threadpool:task_runners.py:224 Starting task runner
+INFO     prefect.flow_runs:flow_engine.py:1237 Beginning flow run 'blue-clam' for flow 'test_multiple_agents'
+INFO     prefect.flow_runs:flow_engine.py:1242 View at http://127.0.0.1:8224/runs/flow-run/6eec2e1b-6988-48a4-8821-38a5b783aec1
+DEBUG    prefect.flow_runs:flow_engine.py:1354 Executing flow 'test_multiple_agents' for flow run 'blue-clam'...
+DEBUG    prefect.client:__init__.py:1098 Connecting to API at http://127.0.0.1:8224/api/
+INFO     prefect.engine:flow_engine.py:1263 View at http://127.0.0.1:8224/runs/flow-run/19714ec8-4923-4472-8df2-e55a170f86dc
+DEBUG    prefect.task_runner.threadpool:task_runners.py:224 Starting task runner
+INFO     prefect.flow_runs:flow_engine.py:1237 Beginning subflow run 'sociable-numbat' for flow 'simple_agent Run'
+INFO     prefect.flow_runs:flow_engine.py:1242 View at http://127.0.0.1:8224/runs/flow-run/19714ec8-4923-4472-8df2-e55a170f86dc
+DEBUG    prefect.flow_runs:flow_engine.py:1354 Executing flow 'simple_agent Run' for flow run 'sociable-numbat'...
+DEBUG    prefect.task_runs:task_engine.py:1323 Created task run 'Model Request: gpt-4o-f9a' for task 'Model Request: gpt-4o'
+DEBUG    prefect.task_runs:task_engine.py:1458 Executing task 'Model Request: gpt-4o' for task run 'Model Request: gpt-4o-f9a'...
+DEBUG    prefect.events.clients:clients.py:302 Reconnecting websocket connection.
+DEBUG    prefect.events.clients:clients.py:310 Opening websocket connection.
+DEBUG    prefect.events.clients:clients.py:313 Pinging to ensure websocket connected.
+DEBUG    prefect.events.clients:clients.py:316 Pong received. Websocket connected.
+DEBUG    prefect.events.clients:clients.py:334 Resending 0 unconfirmed events.
+DEBUG    prefect.events.clients:clients.py:340 Finished resending unconfirmed events.
+DEBUG    prefect.client:__init__.py:1098 Connecting to API at http://127.0.0.1:8224/api/
+DEBUG    prefect.events.clients:clients.py:299 EventsClient(id=5153677840): Emitting event id=019b9553-354a-7793-8e37-d9f1d33b66f5.
+DEBUG    prefect.events.clients:clients.py:367 Added event id=019b9553-354a-7793-8e37-d9f1d33b66f5 to unconfirmed events list. There are now 1 unconfirmed events.
+DEBUG    prefect.events.clients:clients.py:299 EventsClient(id=5153677840): Emit reconnection attempt 0.
+DEBUG    prefect.events.clients:clients.py:299 EventsClient(id=5153677840): Sending event id=019b9553-354a-7793-8e37-d9f1d33b66f5.
+DEBUG    prefect.events.clients:clients.py:299 EventsClient(id=5153677840): Checkpointing event id=019b9553-354a-7793-8e37-d9f1d33b66f5.
+DEBUG    prefect.events.clients:clients.py:299 EventsClient(id=5153677840): Emitting event id=019b9553-354c-7692-a5f4-2db166413978.
+DEBUG    prefect.events.clients:clients.py:367 Added event id=019b9553-354c-7692-a5f4-2db166413978 to unconfirmed events list. There are now 2 unconfirmed events.
+DEBUG    prefect.events.clients:clients.py:299 EventsClient(id=5153677840): Emit reconnection attempt 0.
+DEBUG    prefect.events.clients:clients.py:299 EventsClient(id=5153677840): Sending event id=019b9553-354c-7692-a5f4-2db166413978.
+DEBUG    prefect.events.clients:clients.py:299 EventsClient(id=5153677840): Checkpointing event id=019b9553-354c-7692-a5f4-2db166413978.
+DEBUG    prefect.events.clients:clients.py:299 EventsClient(id=5153677840): Emitting event id=019b9553-37ef-7de4-95da-9efc37e5c953.
+DEBUG    prefect.events.clients:clients.py:367 Added event id=019b9553-37ef-7de4-95da-9efc37e5c953 to unconfirmed events list. There are now 3 unconfirmed events.
+DEBUG    prefect.events.clients:clients.py:299 EventsClient(id=5153677840): Emit reconnection attempt 0.
+DEBUG    prefect.events.clients:clients.py:299 EventsClient(id=5153677840): Sending event id=019b9553-37ef-7de4-95da-9efc37e5c953.
+DEBUG    prefect.events.clients:clients.py:299 EventsClient(id=5153677840): Checkpointing event id=019b9553-37ef-7de4-95da-9efc37e5c953.
+INFO     prefect.task_runs:task_engine.py:292 Finished in state Completed()
+DEBUG    prefect.task_runner.threadpool:task_runners.py:229 Stopping task runner
+INFO     prefect.flow_runs:flow_engine.py:1316 Finished in state Completed()
+---------------------------- Captured log teardown -----------------------------
+DEBUG    prefect.client:base.py:312 Encountered retryable exception during request. Another attempt will be made in 1.9748277316630085s. This is attempt 1/6.
+Traceback (most recent call last):
+  File "/Users/david/projects/forks/pydantic-ai-main/.venv/lib/python3.12/site-packages/httpx/_transports/default.py", line 101, in map_httpcore_exceptions
+    yield
+  File "/Users/david/projects/forks/pydantic-ai-main/.venv/lib/python3.12/site-packages/httpx/_transports/default.py", line 394, in handle_async_request
+    resp = await self._pool.handle_async_request(req)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/david/projects/forks/pydantic-ai-main/.venv/lib/python3.12/site-packages/vcr/stubs/httpcore_stubs.py", line 159, in _vcr_handle_async_request
+    real_response = await real_handle_async_request(self, real_request)
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/david/projects/forks/pydantic-ai-main/.venv/lib/python3.12/site-packages/httpcore/_async/connection_pool.py", line 256, in handle_async_request
+    raise exc from None
+  File "/Users/david/projects/forks/pydantic-ai-main/.venv/lib/python3.12/site-packages/httpcore/_async/connection_pool.py", line 232, in handle_async_request
+    connection = await pool_request.wait_for_connection(timeout=timeout)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/david/projects/forks/pydantic-ai-main/.venv/lib/python3.12/site-packages/httpcore/_async/connection_pool.py", line 35, in wait_for_connection
+    await self._connection_acquired.wait(timeout=timeout)
+  File "/Users/david/projects/forks/pydantic-ai-main/.venv/lib/python3.12/site-packages/httpcore/_synchronization.py", line 149, in wait
+    with map_exceptions(anyio_exc_map):
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/david/.local/share/uv/python/cpython-3.12.10-macos-aarch64-none/lib/python3.12/contextlib.py", line 158, in __exit__
+    self.gen.throw(value)
+  File "/Users/david/projects/forks/pydantic-ai-main/.venv/lib/python3.12/site-packages/httpcore/_exceptions.py", line 14, in map_exceptions
+    raise to_exc(exc) from exc
+httpcore.PoolTimeout
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/Users/david/projects/forks/pydantic-ai-main/.venv/lib/python3.12/site-packages/prefect/client/base.py", line 268, in _send_with_retry
+    response = await send(request, *send_args, **send_kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/david/projects/forks/pydantic-ai-main/.venv/lib/python3.12/site-packages/httpx/_client.py", line 1629, in send
+    response = await self._send_handling_auth(
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/david/projects/forks/pydantic-ai-main/.venv/lib/python3.12/site-packages/httpx/_client.py", line 1657, in _send_handling_auth
+    response = await self._send_handling_redirects(
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/david/projects/forks/pydantic-ai-main/.venv/lib/python3.12/site-packages/httpx/_client.py", line 1694, in _send_handling_redirects
+    response = await self._send_single_request(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/david/projects/forks/pydantic-ai-main/.venv/lib/python3.12/site-packages/httpx/_client.py", line 1730, in _send_single_request
+    response = await transport.handle_async_request(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/david/projects/forks/pydantic-ai-main/.venv/lib/python3.12/site-packages/httpx/_transports/default.py", line 393, in handle_async_request
+    with map_httpcore_exceptions():
+         ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/david/.local/share/uv/python/cpython-3.12.10-macos-aarch64-none/lib/python3.12/contextlib.py", line 158, in __exit__
+    self.gen.throw(value)
+  File "/Users/david/projects/forks/pydantic-ai-main/.venv/lib/python3.12/site-packages/httpx/_transports/default.py", line 118, in map_httpcore_exceptions
+    raise mapped_exc(message) from exc
+httpx.PoolTimeout
+DEBUG    prefect.client:base.py:312 Encountered retryable exception during request. Another attempt will be made in 4.393978983460329s. This is attempt 2/6.
+Traceback (most recent call last):
+  File "/Users/david/projects/forks/pydantic-ai-main/.venv/lib/python3.12/site-packages/httpx/_transports/default.py", line 101, in map_httpcore_exceptions
+    yield
+  File "/Users/david/projects/forks/pydantic-ai-main/.venv/lib/python3.12/site-packages/httpx/_transports/default.py", line 394, in handle_async_request
+    resp = await self._pool.handle_async_request(req)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/david/projects/forks/pydantic-ai-main/.venv/lib/python3.12/site-packages/httpcore/_async/connection_pool.py", line 256, in handle_async_request
+    raise exc from None
+  File "/Users/david/projects/forks/pydantic-ai-main/.venv/lib/python3.12/site-packages/httpcore/_async/connection_pool.py", line 232, in handle_async_request
+    connection = await pool_request.wait_for_connection(timeout=timeout)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/david/projects/forks/pydantic-ai-main/.venv/lib/python3.12/site-packages/httpcore/_async/connection_pool.py", line 35, in wait_for_connection
+    await self._connection_acquired.wait(timeout=timeout)
+  File "/Users/david/projects/forks/pydantic-ai-main/.venv/lib/python3.12/site-packages/httpcore/_synchronization.py", line 149, in wait
+    with map_exceptions(anyio_exc_map):
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/david/.local/share/uv/python/cpython-3.12.10-macos-aarch64-none/lib/python3.12/contextlib.py", line 158, in __exit__
+    self.gen.throw(value)
+  File "/Users/david/projects/forks/pydantic-ai-main/.venv/lib/python3.12/site-packages/httpcore/_exceptions.py", line 14, in map_exceptions
+    raise to_exc(exc) from exc
+httpcore.PoolTimeout
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/Users/david/projects/forks/pydantic-ai-main/.venv/lib/python3.12/site-packages/prefect/client/base.py", line 268, in _send_with_retry
+    response = await send(request, *send_args, **send_kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/david/projects/forks/pydantic-ai-main/.venv/lib/python3.12/site-packages/httpx/_client.py", line 1629, in send
+    response = await self._send_handling_auth(
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/david/projects/forks/pydantic-ai-main/.venv/lib/python3.12/site-packages/httpx/_client.py", line 1657, in _send_handling_auth
+    response = await self._send_handling_redirects(
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/david/projects/forks/pydantic-ai-main/.venv/lib/python3.12/site-packages/httpx/_client.py", line 1694, in _send_handling_redirects
+    response = await self._send_single_request(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/david/projects/forks/pydantic-ai-main/.venv/lib/python3.12/site-packages/httpx/_client.py", line 1730, in _send_single_request
+    response = await transport.handle_async_request(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/david/projects/forks/pydantic-ai-main/.venv/lib/python3.12/site-packages/httpx/_transports/default.py", line 393, in handle_async_request
+    with map_httpcore_exceptions():
+         ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/david/.local/share/uv/python/cpython-3.12.10-macos-aarch64-none/lib/python3.12/contextlib.py", line 158, in __exit__
+    self.gen.throw(value)
+  File "/Users/david/projects/forks/pydantic-ai-main/.venv/lib/python3.12/site-packages/httpx/_transports/default.py", line 118, in map_httpcore_exceptions
+    raise mapped_exc(message) from exc
+httpx.PoolTimeout
+DEBUG    prefect.client:base.py:312 Encountered retryable exception during request. Another attempt will be made in 8.087481053569359s. This is attempt 3/6.
+Traceback (most recent call last):
+  File "/Users/david/projects/forks/pydantic-ai-main/.venv/lib/python3.12/site-packages/httpx/_transports/default.py", line 101, in map_httpcore_exceptions
+    yield
+  File "/Users/david/projects/forks/pydantic-ai-main/.venv/lib/python3.12/site-packages/httpx/_transports/default.py", line 394, in handle_async_request
+    resp = await self._pool.handle_async_request(req)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/david/projects/forks/pydantic-ai-main/.venv/lib/python3.12/site-packages/httpcore/_async/connection_pool.py", line 256, in handle_async_request
+    raise exc from None
+  File "/Users/david/projects/forks/pydantic-ai-main/.venv/lib/python3.12/site-packages/httpcore/_async/connection_pool.py", line 232, in handle_async_request
+    connection = await pool_request.wait_for_connection(timeout=timeout)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/david/projects/forks/pydantic-ai-main/.venv/lib/python3.12/site-packages/httpcore/_async/connection_pool.py", line 35, in wait_for_connection
+    await self._connection_acquired.wait(timeout=timeout)
+  File "/Users/david/projects/forks/pydantic-ai-main/.venv/lib/python3.12/site-packages/httpcore/_synchronization.py", line 149, in wait
+    with map_exceptions(anyio_exc_map):
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/david/.local/share/uv/python/cpython-3.12.10-macos-aarch64-none/lib/python3.12/contextlib.py", line 158, in __exit__
+    self.gen.throw(value)
+  File "/Users/david/projects/forks/pydantic-ai-main/.venv/lib/python3.12/site-packages/httpcore/_exceptions.py", line 14, in map_exceptions
+    raise to_exc(exc) from exc
+httpcore.PoolTimeout
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/Users/david/projects/forks/pydantic-ai-main/.venv/lib/python3.12/site-packages/prefect/client/base.py", line 268, in _send_with_retry
+    response = await send(request, *send_args, **send_kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/david/projects/forks/pydantic-ai-main/.venv/lib/python3.12/site-packages/httpx/_client.py", line 1629, in send
+    response = await self._send_handling_auth(
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/david/projects/forks/pydantic-ai-main/.venv/lib/python3.12/site-packages/httpx/_client.py", line 1657, in _send_handling_auth
+    response = await self._send_handling_redirects(
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/david/projects/forks/pydantic-ai-main/.venv/lib/python3.12/site-packages/httpx/_client.py", line 1694, in _send_handling_redirects
+    response = await self._send_single_request(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/david/projects/forks/pydantic-ai-main/.venv/lib/python3.12/site-packages/httpx/_client.py", line 1730, in _send_single_request
+    response = await transport.handle_async_request(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/david/projects/forks/pydantic-ai-main/.venv/lib/python3.12/site-packages/httpx/_transports/default.py", line 393, in handle_async_request
+    with map_httpcore_exceptions():
+         ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/david/.local/share/uv/python/cpython-3.12.10-macos-aarch64-none/lib/python3.12/contextlib.py", line 158, in __exit__
+    self.gen.throw(value)
+  File "/Users/david/projects/forks/pydantic-ai-main/.venv/lib/python3.12/site-packages/httpx/_transports/default.py", line 118, in map_httpcore_exceptions
+    raise mapped_exc(message) from exc
+httpx.PoolTimeout
+DEBUG    prefect.client:base.py:312 Encountered retryable exception during request. Another attempt will be made in 18.9475336388104s. This is attempt 4/6.
+Traceback (most recent call last):
+  File "/Users/david/projects/forks/pydantic-ai-main/.venv/lib/python3.12/site-packages/httpx/_transports/default.py", line 101, in map_httpcore_exceptions
+    yield
+  File "/Users/david/projects/forks/pydantic-ai-main/.venv/lib/python3.12/site-packages/httpx/_transports/default.py", line 394, in handle_async_request
+    resp = await self._pool.handle_async_request(req)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/david/projects/forks/pydantic-ai-main/.venv/lib/python3.12/site-packages/httpcore/_async/connection_pool.py", line 256, in handle_async_request
+    raise exc from None
+  File "/Users/david/projects/forks/pydantic-ai-main/.venv/lib/python3.12/site-packages/httpcore/_async/connection_pool.py", line 232, in handle_async_request
+    connection = await pool_request.wait_for_connection(timeout=timeout)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/david/projects/forks/pydantic-ai-main/.venv/lib/python3.12/site-packages/httpcore/_async/connection_pool.py", line 35, in wait_for_connection
+    await self._connection_acquired.wait(timeout=timeout)
+  File "/Users/david/projects/forks/pydantic-ai-main/.venv/lib/python3.12/site-packages/httpcore/_synchronization.py", line 149, in wait
+    with map_exceptions(anyio_exc_map):
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/david/.local/share/uv/python/cpython-3.12.10-macos-aarch64-none/lib/python3.12/contextlib.py", line 158, in __exit__
+    self.gen.throw(value)
+  File "/Users/david/projects/forks/pydantic-ai-main/.venv/lib/python3.12/site-packages/httpcore/_exceptions.py", line 14, in map_exceptions
+    raise to_exc(exc) from exc
+httpcore.PoolTimeout
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/Users/david/projects/forks/pydantic-ai-main/.venv/lib/python3.12/site-packages/prefect/client/base.py", line 268, in _send_with_retry
+    response = await send(request, *send_args, **send_kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/david/projects/forks/pydantic-ai-main/.venv/lib/python3.12/site-packages/httpx/_client.py", line 1629, in send
+    response = await self._send_handling_auth(
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/david/projects/forks/pydantic-ai-main/.venv/lib/python3.12/site-packages/httpx/_client.py", line 1657, in _send_handling_auth
+    response = await self._send_handling_redirects(
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/david/projects/forks/pydantic-ai-main/.venv/lib/python3.12/site-packages/httpx/_client.py", line 1694, in _send_handling_redirects
+    response = await self._send_single_request(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/david/projects/forks/pydantic-ai-main/.venv/lib/python3.12/site-packages/httpx/_client.py", line 1730, in _send_single_request
+    response = await transport.handle_async_request(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/david/projects/forks/pydantic-ai-main/.venv/lib/python3.12/site-packages/httpx/_transports/default.py", line 393, in handle_async_request
+    with map_httpcore_exceptions():
+         ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/david/.local/share/uv/python/cpython-3.12.10-macos-aarch64-none/lib/python3.12/contextlib.py", line 158, in __exit__
+    self.gen.throw(value)
+  File "/Users/david/projects/forks/pydantic-ai-main/.venv/lib/python3.12/site-packages/httpx/_transports/default.py", line 118, in map_httpcore_exceptions
+    raise mapped_exc(message) from exc
+httpx.PoolTimeout
+DEBUG    prefect.client:base.py:312 Encountered retryable exception during request. Another attempt will be made in 32.222056777632524s. This is attempt 5/6.
+Traceback (most recent call last):
+  File "/Users/david/projects/forks/pydantic-ai-main/.venv/lib/python3.12/site-packages/httpx/_transports/default.py", line 101, in map_httpcore_exceptions
+    yield
+  File "/Users/david/projects/forks/pydantic-ai-main/.venv/lib/python3.12/site-packages/httpx/_transports/default.py", line 394, in handle_async_request
+    resp = await self._pool.handle_async_request(req)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/david/projects/forks/pydantic-ai-main/.venv/lib/python3.12/site-packages/httpcore/_async/connection_pool.py", line 256, in handle_async_request
+    raise exc from None
+  File "/Users/david/projects/forks/pydantic-ai-main/.venv/lib/python3.12/site-packages/httpcore/_async/connection_pool.py", line 232, in handle_async_request
+    connection = await pool_request.wait_for_connection(timeout=timeout)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/david/projects/forks/pydantic-ai-main/.venv/lib/python3.12/site-packages/httpcore/_async/connection_pool.py", line 35, in wait_for_connection
+    await self._connection_acquired.wait(timeout=timeout)
+  File "/Users/david/projects/forks/pydantic-ai-main/.venv/lib/python3.12/site-packages/httpcore/_synchronization.py", line 149, in wait
+    with map_exceptions(anyio_exc_map):
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/david/.local/share/uv/python/cpython-3.12.10-macos-aarch64-none/lib/python3.12/contextlib.py", line 158, in __exit__
+    self.gen.throw(value)
+  File "/Users/david/projects/forks/pydantic-ai-main/.venv/lib/python3.12/site-packages/httpcore/_exceptions.py", line 14, in map_exceptions
+    raise to_exc(exc) from exc
+httpcore.PoolTimeout
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/Users/david/projects/forks/pydantic-ai-main/.venv/lib/python3.12/site-packages/prefect/client/base.py", line 268, in _send_with_retry
+    response = await send(request, *send_args, **send_kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/david/projects/forks/pydantic-ai-main/.venv/lib/python3.12/site-packages/httpx/_client.py", line 1629, in send
+    response = await self._send_handling_auth(
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/david/projects/forks/pydantic-ai-main/.venv/lib/python3.12/site-packages/httpx/_client.py", line 1657, in _send_handling_auth
+    response = await self._send_handling_redirects(
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/david/projects/forks/pydantic-ai-main/.venv/lib/python3.12/site-packages/httpx/_client.py", line 1694, in _send_handling_redirects
+    response = await self._send_single_request(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/david/projects/forks/pydantic-ai-main/.venv/lib/python3.12/site-packages/httpx/_client.py", line 1730, in _send_single_request
+    response = await transport.handle_async_request(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/david/projects/forks/pydantic-ai-main/.venv/lib/python3.12/site-packages/httpx/_transports/default.py", line 393, in handle_async_request
+    with map_httpcore_exceptions():
+         ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/david/.local/share/uv/python/cpython-3.12.10-macos-aarch64-none/lib/python3.12/contextlib.py", line 158, in __exit__
+    self.gen.throw(value)
+  File "/Users/david/projects/forks/pydantic-ai-main/.venv/lib/python3.12/site-packages/httpx/_transports/default.py", line 118, in map_httpcore_exceptions
+    raise mapped_exc(message) from exc
+httpx.PoolTimeout
+ERROR    prefect.flow_runs:flow_engine.py:1361 Encountered exception during execution: PoolTimeout('')
+Traceback (most recent call last):
+  File "/Users/david/projects/forks/pydantic-ai-main/.venv/lib/python3.12/site-packages/httpx/_transports/default.py", line 101, in map_httpcore_exceptions
+    yield
+  File "/Users/david/projects/forks/pydantic-ai-main/.venv/lib/python3.12/site-packages/httpx/_transports/default.py", line 394, in handle_async_request
+    resp = await self._pool.handle_async_request(req)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/david/projects/forks/pydantic-ai-main/.venv/lib/python3.12/site-packages/httpcore/_async/connection_pool.py", line 256, in handle_async_request
+    raise exc from None
+  File "/Users/david/projects/forks/pydantic-ai-main/.venv/lib/python3.12/site-packages/httpcore/_async/connection_pool.py", line 232, in handle_async_request
+    connection = await pool_request.wait_for_connection(timeout=timeout)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/david/projects/forks/pydantic-ai-main/.venv/lib/python3.12/site-packages/httpcore/_async/connection_pool.py", line 35, in wait_for_connection
+    await self._connection_acquired.wait(timeout=timeout)
+  File "/Users/david/projects/forks/pydantic-ai-main/.venv/lib/python3.12/site-packages/httpcore/_synchronization.py", line 149, in wait
+    with map_exceptions(anyio_exc_map):
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/david/.local/share/uv/python/cpython-3.12.10-macos-aarch64-none/lib/python3.12/contextlib.py", line 158, in __exit__
+    self.gen.throw(value)
+  File "/Users/david/projects/forks/pydantic-ai-main/.venv/lib/python3.12/site-packages/httpcore/_exceptions.py", line 14, in map_exceptions
+    raise to_exc(exc) from exc
+httpcore.PoolTimeout
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/Users/david/projects/forks/pydantic-ai-main/.venv/lib/python3.12/site-packages/prefect/flow_engine.py", line 1357, in run_context
+    yield self
+  File "/Users/david/projects/forks/pydantic-ai-main/.venv/lib/python3.12/site-packages/prefect/flow_engine.py", line 1419, in run_flow_async
+    await engine.call_flow_fn()
+  File "/Users/david/projects/forks/pydantic-ai-main/.venv/lib/python3.12/site-packages/prefect/flow_engine.py", line 1371, in call_flow_fn
+    result = await call_with_parameters(self.flow.fn, self.parameters)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/david/projects/forks/pydantic-ai-main/tests/test_prefect.py", line 571, in run_multiple_agents
+    result2 = await complex_prefect_agent.run(
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/david/projects/forks/pydantic-ai-main/pydantic_ai_slim/pydantic_ai/durable_exec/prefect/_agent.py", line 303, in run
+    return await wrapped_run_flow()
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/david/projects/forks/pydantic-ai-main/.venv/lib/python3.12/site-packages/prefect/flow_engine.py", line 1416, in run_flow_async
+    async with engine.start():
+               ^^^^^^^^^^^^^^
+  File "/Users/david/.local/share/uv/python/cpython-3.12.10-macos-aarch64-none/lib/python3.12/contextlib.py", line 210, in __aenter__
+    return await anext(self.gen)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/david/projects/forks/pydantic-ai-main/.venv/lib/python3.12/site-packages/prefect/flow_engine.py", line 1334, in start
+    async with self.initialize_run():
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/david/.local/share/uv/python/cpython-3.12.10-macos-aarch64-none/lib/python3.12/contextlib.py", line 210, in __aenter__
+    return await anext(self.gen)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/david/projects/forks/pydantic-ai-main/.venv/lib/python3.12/site-packages/prefect/flow_engine.py", line 1259, in initialize_run
+    self.flow_run = await self.create_flow_run(self.client)
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/david/projects/forks/pydantic-ai-main/.venv/lib/python3.12/site-packages/prefect/flow_engine.py", line 1098, in create_flow_run
+    return await client.create_flow_run(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/david/projects/forks/pydantic-ai-main/.venv/lib/python3.12/site-packages/prefect/client/orchestration/_flow_runs/client.py", line 616, in create_flow_run
+    response = await self.request("POST", "/flow_runs/", json=flow_run_create_json)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/david/projects/forks/pydantic-ai-main/.venv/lib/python3.12/site-packages/prefect/client/orchestration/base.py", line 53, in request
+    return await self._client.send(request)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/david/projects/forks/pydantic-ai-main/.venv/lib/python3.12/site-packages/prefect/client/base.py", line 348, in send
+    response = await self._send_with_retry(
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/david/projects/forks/pydantic-ai-main/.venv/lib/python3.12/site-packages/prefect/client/base.py", line 268, in _send_with_retry
+    response = await send(request, *send_args, **send_kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/david/projects/forks/pydantic-ai-main/.venv/lib/python3.12/site-packages/httpx/_client.py", line 1629, in send
+    response = await self._send_handling_auth(
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/david/projects/forks/pydantic-ai-main/.venv/lib/python3.12/site-packages/httpx/_client.py", line 1657, in _send_handling_auth
+    response = await self._send_handling_redirects(
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/david/projects/forks/pydantic-ai-main/.venv/lib/python3.12/site-packages/httpx/_client.py", line 1694, in _send_handling_redirects
+    response = await self._send_single_request(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/david/projects/forks/pydantic-ai-main/.venv/lib/python3.12/site-packages/httpx/_client.py", line 1730, in _send_single_request
+    response = await transport.handle_async_request(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/david/projects/forks/pydantic-ai-main/.venv/lib/python3.12/site-packages/httpx/_transports/default.py", line 393, in handle_async_request
+    with map_httpcore_exceptions():
+         ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/david/.local/share/uv/python/cpython-3.12.10-macos-aarch64-none/lib/python3.12/contextlib.py", line 158, in __exit__
+    self.gen.throw(value)
+  File "/Users/david/projects/forks/pydantic-ai-main/.venv/lib/python3.12/site-packages/httpx/_transports/default.py", line 118, in map_httpcore_exceptions
+    raise mapped_exc(message) from exc
+httpx.PoolTimeout
+DEBUG    prefect.client:base.py:312 Encountered retryable exception during request. Another attempt will be made in 2.31702700533148s. This is attempt 1/6.
+Traceback (most recent call last):
+  File "/Users/david/projects/forks/pydantic-ai-main/.venv/lib/python3.12/site-packages/httpx/_transports/default.py", line 101, in map_httpcore_exceptions
+    yield
+  File "/Users/david/projects/forks/pydantic-ai-main/.venv/lib/python3.12/site-packages/httpx/_transports/default.py", line 394, in handle_async_request
+    resp = await self._pool.handle_async_request(req)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/david/projects/forks/pydantic-ai-main/.venv/lib/python3.12/site-packages/httpcore/_async/connection_pool.py", line 256, in handle_async_request
+    raise exc from None
+  File "/Users/david/projects/forks/pydantic-ai-main/.venv/lib/python3.12/site-packages/httpcore/_async/connection_pool.py", line 232, in handle_async_request
+    connection = await pool_request.wait_for_connection(timeout=timeout)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/david/projects/forks/pydantic-ai-main/.venv/lib/python3.12/site-packages/httpcore/_async/connection_pool.py", line 35, in wait_for_connection
+    await self._connection_acquired.wait(timeout=timeout)
+  File "/Users/david/projects/forks/pydantic-ai-main/.venv/lib/python3.12/site-packages/httpcore/_synchronization.py", line 149, in wait
+    with map_exceptions(anyio_exc_map):
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/david/.local/share/uv/python/cpython-3.12.10-macos-aarch64-none/lib/python3.12/contextlib.py", line 158, in __exit__
+    self.gen.throw(value)
+  File "/Users/david/projects/forks/pydantic-ai-main/.venv/lib/python3.12/site-packages/httpcore/_exceptions.py", line 14, in map_exceptions
+    raise to_exc(exc) from exc
+httpcore.PoolTimeout
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/Users/david/projects/forks/pydantic-ai-main/.venv/lib/python3.12/site-packages/prefect/client/base.py", line 268, in _send_with_retry
+    response = await send(request, *send_args, **send_kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/david/projects/forks/pydantic-ai-main/.venv/lib/python3.12/site-packages/httpx/_client.py", line 1629, in send
+    response = await self._send_handling_auth(
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/david/projects/forks/pydantic-ai-main/.venv/lib/python3.12/site-packages/httpx/_client.py", line 1657, in _send_handling_auth
+    response = await self._send_handling_redirects(
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/david/projects/forks/pydantic-ai-main/.venv/lib/python3.12/site-packages/httpx/_client.py", line 1694, in _send_handling_redirects
+    response = await self._send_single_request(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/david/projects/forks/pydantic-ai-main/.venv/lib/python3.12/site-packages/httpx/_client.py", line 1730, in _send_single_request
+    response = await transport.handle_async_request(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/david/projects/forks/pydantic-ai-main/.venv/lib/python3.12/site-packages/httpx/_transports/default.py", line 393, in handle_async_request
+    with map_httpcore_exceptions():
+         ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/david/.local/share/uv/python/cpython-3.12.10-macos-aarch64-none/lib/python3.12/contextlib.py", line 158, in __exit__
+    self.gen.throw(value)
+  File "/Users/david/projects/forks/pydantic-ai-main/.venv/lib/python3.12/site-packages/httpx/_transports/default.py", line 118, in map_httpcore_exceptions
+    raise mapped_exc(message) from exc
+httpx.PoolTimeout
+DEBUG    prefect.client:base.py:312 Encountered retryable exception during request. Another attempt will be made in 4.2493640676678925s. This is attempt 2/6.
+Traceback (most recent call last):
+  File "/Users/david/projects/forks/pydantic-ai-main/.venv/lib/python3.12/site-packages/httpx/_transports/default.py", line 101, in map_httpcore_exceptions
+    yield
+  File "/Users/david/projects/forks/pydantic-ai-main/.venv/lib/python3.12/site-packages/httpx/_transports/default.py", line 394, in handle_async_request
+    resp = await self._pool.handle_async_request(req)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/david/projects/forks/pydantic-ai-main/.venv/lib/python3.12/site-packages/httpcore/_async/connection_pool.py", line 256, in handle_async_request
+    raise exc from None
+  File "/Users/david/projects/forks/pydantic-ai-main/.venv/lib/python3.12/site-packages/httpcore/_async/connection_pool.py", line 232, in handle_async_request
+    connection = await pool_request.wait_for_connection(timeout=timeout)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/david/projects/forks/pydantic-ai-main/.venv/lib/python3.12/site-packages/httpcore/_async/connection_pool.py", line 35, in wait_for_connection
+    await self._connection_acquired.wait(timeout=timeout)
+  File "/Users/david/projects/forks/pydantic-ai-main/.venv/lib/python3.12/site-packages/httpcore/_synchronization.py", line 149, in wait
+    with map_exceptions(anyio_exc_map):
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/david/.local/share/uv/python/cpython-3.12.10-macos-aarch64-none/lib/python3.12/contextlib.py", line 158, in __exit__
+    self.gen.throw(value)
+  File "/Users/david/projects/forks/pydantic-ai-main/.venv/lib/python3.12/site-packages/httpcore/_exceptions.py", line 14, in map_exceptions
+    raise to_exc(exc) from exc
+httpcore.PoolTimeout
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/Users/david/projects/forks/pydantic-ai-main/.venv/lib/python3.12/site-packages/prefect/client/base.py", line 268, in _send_with_retry
+    response = await send(request, *send_args, **send_kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/david/projects/forks/pydantic-ai-main/.venv/lib/python3.12/site-packages/httpx/_client.py", line 1629, in send
+    response = await self._send_handling_auth(
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/david/projects/forks/pydantic-ai-main/.venv/lib/python3.12/site-packages/httpx/_client.py", line 1657, in _send_handling_auth
+    response = await self._send_handling_redirects(
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/david/projects/forks/pydantic-ai-main/.venv/lib/python3.12/site-packages/httpx/_client.py", line 1694, in _send_handling_redirects
+    response = await self._send_single_request(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/david/projects/forks/pydantic-ai-main/.venv/lib/python3.12/site-packages/httpx/_client.py", line 1730, in _send_single_request
+    response = await transport.handle_async_request(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/david/projects/forks/pydantic-ai-main/.venv/lib/python3.12/site-packages/httpx/_transports/default.py", line 393, in handle_async_request
+    with map_httpcore_exceptions():
+         ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/david/.local/share/uv/python/cpython-3.12.10-macos-aarch64-none/lib/python3.12/contextlib.py", line 158, in __exit__
+    self.gen.throw(value)
+  File "/Users/david/projects/forks/pydantic-ai-main/.venv/lib/python3.12/site-packages/httpx/_transports/default.py", line 118, in map_httpcore_exceptions
+    raise mapped_exc(message) from exc
+httpx.PoolTimeout
+DEBUG    prefect.client:base.py:312 Encountered retryable exception during request. Another attempt will be made in 7.87411326915733s. This is attempt 3/6.
+Traceback (most recent call last):
+  File "/Users/david/projects/forks/pydantic-ai-main/.venv/lib/python3.12/site-packages/httpx/_transports/default.py", line 101, in map_httpcore_exceptions
+    yield
+  File "/Users/david/projects/forks/pydantic-ai-main/.venv/lib/python3.12/site-packages/httpx/_transports/default.py", line 394, in handle_async_request
+    resp = await self._pool.handle_async_request(req)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/david/projects/forks/pydantic-ai-main/.venv/lib/python3.12/site-packages/httpcore/_async/connection_pool.py", line 256, in handle_async_request
+    raise exc from None
+  File "/Users/david/projects/forks/pydantic-ai-main/.venv/lib/python3.12/site-packages/httpcore/_async/connection_pool.py", line 232, in handle_async_request
+    connection = await pool_request.wait_for_connection(timeout=timeout)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/david/projects/forks/pydantic-ai-main/.venv/lib/python3.12/site-packages/httpcore/_async/connection_pool.py", line 35, in wait_for_connection
+    await self._connection_acquired.wait(timeout=timeout)
+  File "/Users/david/projects/forks/pydantic-ai-main/.venv/lib/python3.12/site-packages/httpcore/_synchronization.py", line 149, in wait
+    with map_exceptions(anyio_exc_map):
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/david/.local/share/uv/python/cpython-3.12.10-macos-aarch64-none/lib/python3.12/contextlib.py", line 158, in __exit__
+    self.gen.throw(value)
+  File "/Users/david/projects/forks/pydantic-ai-main/.venv/lib/python3.12/site-packages/httpcore/_exceptions.py", line 14, in map_exceptions
+    raise to_exc(exc) from exc
+httpcore.PoolTimeout
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/Users/david/projects/forks/pydantic-ai-main/.venv/lib/python3.12/site-packages/prefect/client/base.py", line 268, in _send_with_retry
+    response = await send(request, *send_args, **send_kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/david/projects/forks/pydantic-ai-main/.venv/lib/python3.12/site-packages/httpx/_client.py", line 1629, in send
+    response = await self._send_handling_auth(
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/david/projects/forks/pydantic-ai-main/.venv/lib/python3.12/site-packages/httpx/_client.py", line 1657, in _send_handling_auth
+    response = await self._send_handling_redirects(
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/david/projects/forks/pydantic-ai-main/.venv/lib/python3.12/site-packages/httpx/_client.py", line 1694, in _send_handling_redirects
+    response = await self._send_single_request(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/david/projects/forks/pydantic-ai-main/.venv/lib/python3.12/site-packages/httpx/_client.py", line 1730, in _send_single_request
+    response = await transport.handle_async_request(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/david/projects/forks/pydantic-ai-main/.venv/lib/python3.12/site-packages/httpx/_transports/default.py", line 393, in handle_async_request
+    with map_httpcore_exceptions():
+         ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/david/.local/share/uv/python/cpython-3.12.10-macos-aarch64-none/lib/python3.12/contextlib.py", line 158, in __exit__
+    self.gen.throw(value)
+  File "/Users/david/projects/forks/pydantic-ai-main/.venv/lib/python3.12/site-packages/httpx/_transports/default.py", line 118, in map_httpcore_exceptions
+    raise mapped_exc(message) from exc
+httpx.PoolTimeout
+DEBUG    prefect.client:base.py:312 Encountered retryable exception during request. Another attempt will be made in 15.853056255891465s. This is attempt 4/6.
+Traceback (most recent call last):
+  File "/Users/david/projects/forks/pydantic-ai-main/.venv/lib/python3.12/site-packages/httpx/_transports/default.py", line 101, in map_httpcore_exceptions
+    yield
+  File "/Users/david/projects/forks/pydantic-ai-main/.venv/lib/python3.12/site-packages/httpx/_transports/default.py", line 394, in handle_async_request
+    resp = await self._pool.handle_async_request(req)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/david/projects/forks/pydantic-ai-main/.venv/lib/python3.12/site-packages/httpcore/_async/connection_pool.py", line 256, in handle_async_request
+    raise exc from None
+  File "/Users/david/projects/forks/pydantic-ai-main/.venv/lib/python3.12/site-packages/httpcore/_async/connection_pool.py", line 232, in handle_async_request
+    connection = await pool_request.wait_for_connection(timeout=timeout)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/david/projects/forks/pydantic-ai-main/.venv/lib/python3.12/site-packages/httpcore/_async/connection_pool.py", line 35, in wait_for_connection
+    await self._connection_acquired.wait(timeout=timeout)
+  File "/Users/david/projects/forks/pydantic-ai-main/.venv/lib/python3.12/site-packages/httpcore/_synchronization.py", line 149, in wait
+    with map_exceptions(anyio_exc_map):
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/david/.local/share/uv/python/cpython-3.12.10-macos-aarch64-none/lib/python3.12/contextlib.py", line 158, in __exit__
+    self.gen.throw(value)
+  File "/Users/david/projects/forks/pydantic-ai-main/.venv/lib/python3.12/site-packages/httpcore/_exceptions.py", line 14, in map_exceptions
+    raise to_exc(exc) from exc
+httpcore.PoolTimeout
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/Users/david/projects/forks/pydantic-ai-main/.venv/lib/python3.12/site-packages/prefect/client/base.py", line 268, in _send_with_retry
+    response = await send(request, *send_args, **send_kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/david/projects/forks/pydantic-ai-main/.venv/lib/python3.12/site-packages/httpx/_client.py", line 1629, in send
+    response = await self._send_handling_auth(
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/david/projects/forks/pydantic-ai-main/.venv/lib/python3.12/site-packages/httpx/_client.py", line 1657, in _send_handling_auth
+    response = await self._send_handling_redirects(
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/david/projects/forks/pydantic-ai-main/.venv/lib/python3.12/site-packages/httpx/_client.py", line 1694, in _send_handling_redirects
+    response = await self._send_single_request(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/david/projects/forks/pydantic-ai-main/.venv/lib/python3.12/site-packages/httpx/_client.py", line 1730, in _send_single_request
+    response = await transport.handle_async_request(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/david/projects/forks/pydantic-ai-main/.venv/lib/python3.12/site-packages/httpx/_transports/default.py", line 393, in handle_async_request
+    with map_httpcore_exceptions():
+         ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/david/.local/share/uv/python/cpython-3.12.10-macos-aarch64-none/lib/python3.12/contextlib.py", line 158, in __exit__
+    self.gen.throw(value)
+  File "/Users/david/projects/forks/pydantic-ai-main/.venv/lib/python3.12/site-packages/httpx/_transports/default.py", line 118, in map_httpcore_exceptions
+    raise mapped_exc(message) from exc
+httpx.PoolTimeout
+DEBUG    prefect.client:base.py:312 Encountered retryable exception during request. Another attempt will be made in 31.084348040775126s. This is attempt 5/6.
+Traceback (most recent call last):
+  File "/Users/david/projects/forks/pydantic-ai-main/.venv/lib/python3.12/site-packages/httpx/_transports/default.py", line 101, in map_httpcore_exceptions
+    yield
+  File "/Users/david/projects/forks/pydantic-ai-main/.venv/lib/python3.12/site-packages/httpx/_transports/default.py", line 394, in handle_async_request
+    resp = await self._pool.handle_async_request(req)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/david/projects/forks/pydantic-ai-main/.venv/lib/python3.12/site-packages/httpcore/_async/connection_pool.py", line 256, in handle_async_request
+    raise exc from None
+  File "/Users/david/projects/forks/pydantic-ai-main/.venv/lib/python3.12/site-packages/httpcore/_async/connection_pool.py", line 232, in handle_async_request
+    connection = await pool_request.wait_for_connection(timeout=timeout)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/david/projects/forks/pydantic-ai-main/.venv/lib/python3.12/site-packages/httpcore/_async/connection_pool.py", line 35, in wait_for_connection
+    await self._connection_acquired.wait(timeout=timeout)
+  File "/Users/david/projects/forks/pydantic-ai-main/.venv/lib/python3.12/site-packages/httpcore/_synchronization.py", line 149, in wait
+    with map_exceptions(anyio_exc_map):
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/david/.local/share/uv/python/cpython-3.12.10-macos-aarch64-none/lib/python3.12/contextlib.py", line 158, in __exit__
+    self.gen.throw(value)
+  File "/Users/david/projects/forks/pydantic-ai-main/.venv/lib/python3.12/site-packages/httpcore/_exceptions.py", line 14, in map_exceptions
+    raise to_exc(exc) from exc
+httpcore.PoolTimeout
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/Users/david/projects/forks/pydantic-ai-main/.venv/lib/python3.12/site-packages/prefect/client/base.py", line 268, in _send_with_retry
+    response = await send(request, *send_args, **send_kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/david/projects/forks/pydantic-ai-main/.venv/lib/python3.12/site-packages/httpx/_client.py", line 1629, in send
+    response = await self._send_handling_auth(
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/david/projects/forks/pydantic-ai-main/.venv/lib/python3.12/site-packages/httpx/_client.py", line 1657, in _send_handling_auth
+    response = await self._send_handling_redirects(
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/david/projects/forks/pydantic-ai-main/.venv/lib/python3.12/site-packages/httpx/_client.py", line 1694, in _send_handling_redirects
+    response = await self._send_single_request(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/david/projects/forks/pydantic-ai-main/.venv/lib/python3.12/site-packages/httpx/_client.py", line 1730, in _send_single_request
+    response = await transport.handle_async_request(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/david/projects/forks/pydantic-ai-main/.venv/lib/python3.12/site-packages/httpx/_transports/default.py", line 393, in handle_async_request
+    with map_httpcore_exceptions():
+         ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/david/.local/share/uv/python/cpython-3.12.10-macos-aarch64-none/lib/python3.12/contextlib.py", line 158, in __exit__
+    self.gen.throw(value)
+  File "/Users/david/projects/forks/pydantic-ai-main/.venv/lib/python3.12/site-packages/httpx/_transports/default.py", line 118, in map_httpcore_exceptions
+    raise mapped_exc(message) from exc
+httpx.PoolTimeout
+DEBUG    prefect.task_runner.threadpool:task_runners.py:229 Stopping task runner
+ERROR    prefect.flow_runs:flow_engine.py:1316 Finished in state Running()
+INFO     prefect:server.py:960 Stopping temporary server on http://127.0.0.1:8224
+                              Summary of Failures                               
+┏━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━┓
+┃               ┃               ┃  Function     ┃              ┃               ┃
+┃  File         ┃  Function     ┃  Line         ┃  Error Line  ┃  Error        ┃
+┡━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━┩
+│  tests/test…  │  test_multi…  │  565          │  160         │  Terminatio…  │
+└───────────────┴───────────────┴───────────────┴──────────────┴───────────────┘
+Results (863.17s):
+         1 failed

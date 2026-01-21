@@ -1,0 +1,8 @@
+.env*
+!.env*.example
+
+# Override global gitignore to include .local. files in this repo
+!**/*.local.*
+!**/CLAUDE.local.template.md
+!**/CLAUDE.global.template.md
+!**/.claude/settings.local.json
