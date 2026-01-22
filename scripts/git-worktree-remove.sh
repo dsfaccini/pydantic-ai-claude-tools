@@ -45,13 +45,31 @@ pydantic-worktree-remove() {
         return 1
     fi
 
+    # Check for uncommitted changes
+    local has_changes=false
+    if [ -n "$(git -C "$worktree_path" status --porcelain 2>/dev/null)" ]; then
+        has_changes=true
+        echo "Warning: Worktree has uncommitted changes:"
+        git -C "$worktree_path" status --short
+        echo ""
+        read "force?Force remove anyway? [y/N] "
+        if [ "$force" != "y" ] && [ "$force" != "Y" ]; then
+            echo "Aborted"
+            return 0
+        fi
+    fi
+
     echo "Removing worktree: $worktree_path"
     echo "Branch: $branch_name"
     echo "Main repo: $PYDANTIC_AI_REPO"
 
     cd "$PYDANTIC_AI_REPO" || return 1
 
-    git worktree remove "$worktree_path" || return 1
+    if [ "$has_changes" = true ]; then
+        git worktree remove --force "$worktree_path" || return 1
+    else
+        git worktree remove "$worktree_path" || return 1
+    fi
 
     # Delete the branch (use -d for safe delete, only if merged)
     git branch -d "$branch_name" || return 1

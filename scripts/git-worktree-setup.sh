@@ -2,6 +2,13 @@
 # Usage: source this file, then call pydantic-worktree <branch-name>
 
 pydantic-worktree() {
+    if [ -z "$PYDANTIC_AI_TOOLS_REPO" ]; then
+        echo "Error: PYDANTIC_AI_TOOLS_REPO env var not set"
+        echo "Set it to your pydantic-ai-claude-tools repo path, e.g.:"
+        echo "  export PYDANTIC_AI_TOOLS_REPO=~/projects/pydantic-ai-claude-tools"
+        return 1
+    fi
+
     if [ -z "$PYDANTIC_AI_REPO" ]; then
         echo "Error: PYDANTIC_AI_REPO env var not set"
         echo "Set it to your pydantic-ai main repo path, e.g.:"
@@ -14,7 +21,6 @@ pydantic-worktree() {
         return 1
     fi
 
-    local script_dir="${0:A:h}"
     local branch_name="$1"
     local worktree_path="$(dirname "$PYDANTIC_AI_REPO")/$branch_name"
 
@@ -27,7 +33,7 @@ pydantic-worktree() {
     cd "$worktree_path" || return 1
 
     # Copy config files
-    "$script_dir/copy-pydantic-config.sh" . || return 1
+    "$PYDANTIC_AI_TOOLS_REPO/scripts/copy-pydantic-config.sh" . || return 1
 
     echo "Merging upstream/main..."
     git merge upstream/main --no-edit || return 1

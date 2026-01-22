@@ -11,7 +11,15 @@ echo "Copying config from $TOOLS_REPO to $TARGET_DIR"
 
 # Copy from tools repo (overwrite)
 [ -f "$TOOLS_REPO/.env" ] && cp "$TOOLS_REPO/.env" "$TARGET_DIR/"
-[ -f "$TOOLS_REPO/.mcp.json" ] && cp "$TOOLS_REPO/.mcp.json" "$TARGET_DIR/"
+
+# Copy .mcp.json and substitute LOGFIRE_TOKEN if set
+if [ -f "$TOOLS_REPO/.mcp.json" ]; then
+    if [ -n "$LOGFIRE_TOKEN" ]; then
+        sed "s/pylf_YOUR_TOKEN/$LOGFIRE_TOKEN/g" "$TOOLS_REPO/.mcp.json" > "$TARGET_DIR/.mcp.json"
+    else
+        cp "$TOOLS_REPO/.mcp.json" "$TARGET_DIR/.mcp.json"
+    fi
+fi
 cp "$TOOLS_REPO/CLAUDE.local.template.md" "$TARGET_DIR/CLAUDE.local.md"
 
 # Copy .claude directory (overwrite)
@@ -32,8 +40,5 @@ if [ -d "$TOOLS_REPO/local-notes" ]; then
     done
     [ -f "$TARGET_DIR/local-notes/report.md" ] && > "$TARGET_DIR/local-notes/report.md"
 fi
-
-# Symlink learnings (force overwrite)
-[ -d "$TOOLS_REPO/learnings" ] && ln -sf "$TOOLS_REPO/learnings" "$TARGET_DIR/learnings"
 
 echo "Config copied successfully"

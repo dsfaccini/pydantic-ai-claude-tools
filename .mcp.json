@@ -1,8 +1,12 @@
 {
-	"mcpServers": {
-		"sequential-thinking": {
-			"command": "npx",
-			"args": ["-y", "@modelcontextprotocol/server-sequential-thinking"]
-		}
-	}
+  "mcpServers": {
+    "sequential-thinking": {
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-sequential-thinking"]
+    },
+    "logfire": {
+      "command": "uvx",
+      "args": ["logfire-mcp@latest", "--read-token=pylf_YOUR_TOKEN"]
+    }
+  }
 }
