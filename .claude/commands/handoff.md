@@ -1,5 +1,5 @@
 ---
-allowed-tools: Read, Write, Edit, Glob, Grep, Bash(git status:*), Bash(git diff:*), Bash(git log:*), mcp__openmemory__openmemory_query, mcp__openmemory__openmemory_store, mcp__openmemory__openmemory_list
+allowed-tools: Read, Write, Edit, Glob, Grep, Bash(git status:*), Bash(git diff:*), Bash(git log:*)
 description: Prepare a handoff summary for the next agent/session
 ---
 
@@ -40,7 +40,7 @@ Write a handoff summary to `local-notes/handoff.md` with these sections:
 
 ## Update Memories
 
-Store a brief handoff memory in openmemory with:
+If you have a memory tool of some kind, store a brief handoff memory with:
 - Current state summary
 - Next steps
 - Any critical context the next session needs

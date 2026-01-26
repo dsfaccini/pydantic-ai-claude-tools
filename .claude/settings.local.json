@@ -1,17 +1,4 @@
 {
-  "hooks": {
-    "Stop": [
-      {
-        "matcher": "Edit|Write|MultiEdit",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "echo '\\n[Reminder] Run /pydantic-review before committing'"
-          }
-        ]
-      }
-    ]
-  },
   "permissions": {
     "allow": [
       "Bash(.claude/skills/gh-cli-best-practices/get-latest-ci-failure.sh)",
@@ -44,8 +31,7 @@
       "Bash(python -c:*)",
       "Bash(sed:*)",
       "Bash(sg:*)",
-      "Bash(source .env)",
-      "Bash(source .venv/bin/activate:*)",
+      "Bash(source .env:*)",
       "Bash(source .venv/bin/activate && uv run:*)",
       "Bash(source .venv/bin/activate && python:*)",
       "Bash(uv pip show:*)",
@@ -88,5 +74,31 @@
       "Bash(git reset:*)"
     ]
   },
-  "enabledMcpjsonServers": ["sequential-thinking"]
+  "enabledMcpjsonServers": [
+    "sequential-thinking",
+    "logfire"
+  ],
+  "hooks": {
+    "Stop": [
+      {
+        "matcher": "Edit|Write|MultiEdit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "echo '\\n[Reminder] Run /pydantic-review before committing'"
+          }
+        ]
+      },
+      {
+        "matcher": "ExitPlanMode",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "echo '\\n[Reminder] Symlink the plan into .claude/plans/ in this folder and reference it in CLAUDE.local.md. Also reference any todo list you have created.'"
+          }
+        ]
+      }
+    ]
+  },
+  "enableAllProjectMcpServers": true
 }

@@ -160,9 +160,8 @@ a long term goal would be to spot single tests in multiple providers that can be
 - fixtures or helpers for a specific test should be placed immediately before that test
 
 ### commands
-- use `uv run pytest tests/models/test_file.py::test_name --record-mode=rewrite` to re-record a cassette
-- use `uv run pytest ... --inline-snapshot=create` to fill out empty snapshots
-	- this is mostly done after recording cassettes (we don't infer what will be in the snapshot before doing that)
+
+For VCR cassette recording workflow, see `.claude/skills/vcr-test-recording.md`
 
 ### Experimentation/Debugging
 
@@ -175,6 +174,7 @@ When "one-time" scripts prove useful to iterate and verify code changes or testi
 - for running experiments or tests we hit the APIs directly
 - for this you can run `source .env && uv run python/pytest` followed by your command
 - to run live API calls to vertex and bedrock please verify beforehand that they're properly set up
-	- bedrock: by checking for the `AWS_BEARER_TOKEN_BEDROCK` and trying an LLM call using curl
+	- bedrock: appropriate home credentials may be set in `~/.aws/credentials/`, boto3 should pick those up automatically
+		- otherwise ask for a fresh `AWS_BEARER_TOKEN_BEDROCK` and try an LLM call using curl
 	- vertex: by checking `gcloud auth application-default print-access-token` is set up
 		- additionally cheking `gcloud config get-value project` outputs `gen-lang-client-0498264908`

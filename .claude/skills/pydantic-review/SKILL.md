@@ -30,6 +30,18 @@ Review the changed files listed above for violations of these rules:
 7. **No stacklevel**: Don't use `stacklevel` in `warnings.warn()` calls
 8. **Refactor for moves**: Use ast-grep/LSP/IDE for renames and moves
 9. **Empty snapshots**: Write `snapshot()` empty, run `pytest --inline-snapshot=create`
+10. **Use any() for type checks in lists**: Don't iterate with for-loop just to check if any item is of a type:
+    ```python
+    # BAD
+    if isinstance(result, list):
+        for item in result:
+            if isinstance(item, SomeType):
+                raise Error(...)
+
+    # GOOD
+    elif isinstance(result, list) and any(isinstance(i, SomeType) for i in result):
+        raise Error(...)
+    ```
 
 ## Instructions
 
