@@ -178,3 +178,6 @@ When "one-time" scripts prove useful to iterate and verify code changes or testi
 		- otherwise ask for a fresh `AWS_BEARER_TOKEN_BEDROCK` and try an LLM call using curl
 	- vertex: by checking `gcloud auth application-default print-access-token` is set up
 		- additionally cheking `gcloud config get-value project` outputs `gen-lang-client-0498264908`
+		- then to run the tests **don't** use `source .env`, instead use `unset GOOGLE_API_KEY GEMINI_API_KEY` because otherwise the keys will get picked up and auth will fail
+		- we do need these two variables `GOOGLE_CLOUD_PROJECT` and `GOOGLE_CLOUD_LOCATION` (default "global") which you need to set using the output from the project config or from the **specific** lines in the .env, if available
+		- it's best toc reate a claude code command that you can trigger easily when recording google-vertex tests

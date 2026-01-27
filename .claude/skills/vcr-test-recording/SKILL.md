@@ -1,3 +1,8 @@
+---
+name: vcr-test-recording
+description: Workflow for recording and re-recording VCR cassettes for tests. Use when tests need HTTP recordings created or updated.
+---
+
 # VCR Test Recording Workflow
 
 Use this skill when recording or re-recording VCR cassettes for tests.

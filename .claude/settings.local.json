@@ -34,6 +34,8 @@
       "Bash(source .env:*)",
       "Bash(source .venv/bin/activate && uv run:*)",
       "Bash(source .venv/bin/activate && python:*)",
+      "Bash(tail:*)",
+      "Bash(test:*)",
       "Bash(uv pip show:*)",
       "Bash(uv run pytest tests/ -k:*)",
       "Bash(wc:*)",
@@ -74,11 +76,19 @@
       "Bash(git reset:*)"
     ]
   },
-  "enabledMcpjsonServers": [
-    "sequential-thinking",
-    "logfire"
-  ],
+  "enabledMcpjsonServers": ["sequential-thinking", "logfire"],
   "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Edit|Write|MultiEdit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "if echo \"$CLAUDE_FILE_PATHS\" | grep -qE 'tests/.*/cassettes/'; then echo 'BLOCKED: Do not write cassette files by hand. They are recorded as explained in the `vcr-test-recording` skill.' >&2; exit 1; fi"
+          }
+        ]
+      }
+    ],
     "Stop": [
       {
         "matcher": "Edit|Write|MultiEdit",
