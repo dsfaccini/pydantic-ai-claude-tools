@@ -38,6 +38,7 @@ mkdir -p "$TARGET_DIR/.claude"
 [ -d "$TOOLS_REPO/.claude/agents" ] && cp -r "$TOOLS_REPO/.claude/agents" "$TARGET_DIR/.claude/"
 [ -d "$TOOLS_REPO/.claude/commands" ] && cp -r "$TOOLS_REPO/.claude/commands" "$TARGET_DIR/.claude/"
 [ -d "$TOOLS_REPO/.claude/skills" ] && cp -r "$TOOLS_REPO/.claude/skills" "$TARGET_DIR/.claude/"
+[ -d "$TOOLS_REPO/.claude/hooks" ] && cp -r "$TOOLS_REPO/.claude/hooks" "$TARGET_DIR/.claude/"
 
 # Copy local-notes structure (excluding memory.sqlite), empty report.md
 if [ -d "$TOOLS_REPO/local-notes" ]; then

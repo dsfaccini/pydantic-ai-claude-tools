@@ -1,6 +1,6 @@
 ---
 name: pytest-vcr
-description: Workflow for recording VCR cassettes and parsing them for debugging. Use when tests need HTTP recordings created/updated or when debugging cassette contents.
+description: Use this skill to record VCR cassettes and parsing them for debugging. Use when tests need HTTP recordings created/updated or when debugging cassette contents.
 ---
 
 # Pytest VCR Workflow

@@ -17,6 +17,7 @@
       "Bash(git fetch:*)",
       "Bash(git grep:*)",
       "Bash(git log:*)",
+      "Bash(git mv:*)",
       "Bash(git pull)",
       "Bash(git show:*)",
       "Bash(git status:*)",
@@ -26,6 +27,8 @@
       "Bash(gh pr checkout:*)",
       "Bash(gh pr diff:*)",
       "Bash(gh pr view:*)",
+      "Bash(gh release list:*)",
+      "Bash(gh release view:*)",
       "Bash(gh repo view:*)",
       "Bash(gh run list:*)",
       "Bash(gh search:*)",
@@ -35,6 +38,7 @@
       "Bash(ls:*)",
       "Bash(mkdir:*)",
       "Bash(pre-commit run:*)",
+      "Bash(PYRIGHT_PYTHON_IGNORE_WARNINGS=1 uv run pyright:*)",
       "Bash(python -c:*)",
       "Bash(sed:*)",
       "Bash(sg:*)",
@@ -45,6 +49,7 @@
       "Bash(test:*)",
       "Bash(uv pip show:*)",
       "Bash(uv run pytest tests/ -k:*)",
+      "Bash(uvx ty check:*)",
       "Bash(wc:*)",
       "Bash(xargs:*)",
       "mcp__acp__Bash",
@@ -68,8 +73,9 @@
     "deny": [
       "Bash(make test:*)",
       "Bash(find /Users/david:*)",
-      "Bash(uv run pytest tests/:*)",
-      "Bash(source .venv/bin/activate && uv run pytest tests/:*)"
+      "Bash(uv run pytest tests/)",
+      "Bash(source .venv/bin/activate && uv run pytest tests/)",
+      "Edit(content:pytest.mark.skip)"
     ],
     "ask": [
       "Bash(gh api --method:*)",
@@ -80,7 +86,8 @@
       "Bash(git checkout:*)",
       "Bash(git commit:*)",
       "Bash(git push:*)",
-      "Bash(git reset:*)"
+      "Bash(git reset:*)",
+      "Bash(git rm:*)"
     ]
   },
   "enabledMcpjsonServers": ["sequential-thinking", "logfire"],
@@ -92,6 +99,15 @@
           {
             "type": "command",
             "command": "if echo \"$CLAUDE_FILE_PATHS\" | grep -qE 'tests/.*/cassettes/'; then echo 'BLOCKED: Do not write cassette files by hand. They are recorded as explained in the `vcr-test-recording` skill.' >&2; exit 1; fi"
+          }
+        ]
+      },
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "\"$CLAUDE_PROJECT_DIR\"/.claude/hooks/block-direct-tests.sh"
           }
         ]
       }
