@@ -40,6 +40,12 @@ mkdir -p "$TARGET_DIR/.claude"
 [ -d "$TOOLS_REPO/.claude/skills" ] && cp -r "$TOOLS_REPO/.claude/skills" "$TARGET_DIR/.claude/"
 [ -d "$TOOLS_REPO/.claude/hooks" ] && cp -r "$TOOLS_REPO/.claude/hooks" "$TARGET_DIR/.claude/"
 
+# Copy tests/CLAUDE.md (skip silently if exists)
+if [ -f "$TOOLS_REPO/tests.CLAUDE.md" ] && [ ! -f "$TARGET_DIR/tests/CLAUDE.md" ]; then
+    mkdir -p "$TARGET_DIR/tests"
+    cp "$TOOLS_REPO/tests.CLAUDE.md" "$TARGET_DIR/tests/CLAUDE.md"
+fi
+
 # Copy local-notes structure (excluding memory.sqlite), empty report.md
 if [ -d "$TOOLS_REPO/local-notes" ]; then
     mkdir -p "$TARGET_DIR/local-notes"

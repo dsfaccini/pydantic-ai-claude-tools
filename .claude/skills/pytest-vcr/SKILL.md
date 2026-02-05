@@ -1,6 +1,6 @@
 ---
 name: pytest-vcr
-description: Use this skill to record VCR cassettes and parsing them for debugging. Use when tests need HTTP recordings created/updated or when debugging cassette contents.
+description: Record, rewrite, and debug VCR cassettes for HTTP recordings. Use when running tests with --record-mode, verifying cassette playback, or inspecting request/response bodies in YAML cassettes.
 ---
 
 # Pytest VCR Workflow
@@ -9,7 +9,8 @@ Use this skill when recording or re-recording VCR cassettes for tests, or when d
 
 ## Prerequisites
 
-- Ensure `.env` file exists with required API keys
+- Ensure API keys are loaded in the environment or present in the `.env` file 
+- use the `.env.example` as a template
 - Tests must be using VCR for HTTP recording
 
 ## Important flags
@@ -38,8 +39,6 @@ Multiple tests can be specified:
 ```bash
 source .env && uv run pytest path/to/test.py::test_one path/to/test.py::test_two -v --tb=line --record-mode=new_episodes
 ```
-
-Do NOT use `-v` flag during recording.
 
 ### Step 2: Verify recordings
 
@@ -84,6 +83,24 @@ For each interaction, shows:
 
 Base64 strings longer than 100 chars are truncated for readability.
 
+
+## Vertex AI Tests
+
+Vertex tests require special auth setup. Use the provided script:
+
+```bash
+# Record new Vertex cassettes
+.claude/skills/pytest-vcr/run-vertex-tests.sh tests/path/to/test.py -v --tb=line --record-mode=new_episodes
+
+# Verify playback
+.claude/skills/pytest-vcr/run-vertex-tests.sh tests/path/to/test.py -vv --tb=line
+```
+
+The script auto-detects project from gcloud and checks auth. If auth fails:
+```bash
+gcloud auth application-default login
+gcloud config set project <your-project-id>
+```
 
 ## Full Workflow Example
 

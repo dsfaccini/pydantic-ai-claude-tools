@@ -55,6 +55,8 @@
       "mcp__acp__Bash",
       "mcp__acp__Write",
       "mcp__acp__Edit",
+      "mcp__logfire__logfire_link",
+      "mcp__logfire__arbitrary_query",
       "mcp__sequential-thinking__sequentialthinking",
       "Skill(gh-cli-best-practices:*)",
       "Skill(pytest-vcr:*)",
