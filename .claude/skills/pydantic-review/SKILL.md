@@ -1,14 +1,14 @@
 ---
 name: pydantic-review
-description: Review staged and unstaged changes for pydantic-ai coding convention violations using a fresh subagent
+description: Review changes for pydantic-ai design, API, and architecture violations. Use after writing code to catch high-level issues before committing.
 context: fork
 agent: Explore
 allowed-tools: Read, Glob, Grep, mcp__pylsp__*
 ---
 
-# Pydantic-AI Code Review Skill
+# Pydantic-AI Design & Convention Review
 
-You are a fresh code reviewer checking edits for pydantic-ai coding convention violations.
+You are a fresh code reviewer checking edits for pydantic-ai high-level design and convention violations.
 
 ## Changed Files
 
@@ -18,46 +18,57 @@ You are a fresh code reviewer checking edits for pydantic-ai coding convention v
 
 Review the changed files listed above for violations of these rules:
 
-### Comment Rules
-1. **No line number references**: Comments must not reference line numbers (e.g. "line 42", "L123", "lines 10-20")
-2. **No pragma trailing comments**: Pragma statements should stand alone without trailing comments
-3. **Preserve meaningful comments**: Don't remove existing explicatory comments
-4. **No redundant comments**: Avoid "increment x by 1" style comments that just repeat what code says
-5. **Backticks in docstrings**: Code references in docstrings must be wrapped in backticks (e.g. `my_function`)
+### 1. Code Style
+- Extract helpers only at 2-3+ call sites; no single-use helpers
+- Simplify nested conditionals: use `and`/`or`, `elif` chains
+- List comprehensions over append loops
+- Tuple form for `isinstance(x, (A, B))`
+- Use sets for unique collections
+- Walrus operator where it simplifies
+- Omit redundant name context (e.g. `UserManager.get_user()` → `UserManager.get()`)
 
-### Code Pattern Rules
-6. **Use assert_never**: Prefer `assert_never()` over `# pragma: no branch`
-7. **No stacklevel**: Don't use `stacklevel` in `warnings.warn()` calls
-8. **Refactor for moves**: Use ast-grep/LSP/IDE for renames and moves
-9. **Empty snapshots**: Write `snapshot()` empty, run `pytest --inline-snapshot=create`
-10. **Use any() for type checks in lists**: Don't iterate with for-loop just to check if any item is of a type:
-    ```python
-    # BAD
-    if isinstance(result, list):
-        for item in result:
-            if isinstance(item, SomeType):
-                raise Error(...)
+### 2. API Design
+- `_` prefix for internal/private symbols
+- Keyword-only for optional params (use `*` separator)
+- Typed fields, not generic dicts — prefer `TypedDict` over `dict[str, Any]`
+- Provider-specific features stay in provider classes
+- No duplicate validation across layers
+- Provider-agnostic terminology in shared interfaces
+- If a feature applies to 2+ providers, implement for all upfront
 
-    # GOOD
-    elif isinstance(result, list) and any(isinstance(i, SomeType) for i in result):
-        raise Error(...)
-    ```
+### 3. Type System
+- `assert_never()` for exhaustive union/enum handling
+- `TypedDict` not `dict[str, Any]` for structured data
+- `TYPE_CHECKING` imports for optional/heavy deps
+- Remove stale `# type: ignore` comments that no longer suppress real errors
+
+### 4. Error Handling
+- Explicit errors for unsupported inputs (not silent fallthrough)
+- Catch specific exceptions, not broad `Exception`
+
+### 5. Documentation
+- Backticks around code refs in docstrings (e.g. `my_function`)
+- Consistent terminology across related docstrings
+- Write docs from user perspective
+- Update docs when code changes
+- Match documentation depth across related API elements
+
+### 6. Architecture
+- No single-use helpers or private methods in already-private modules
+- Profiles in `profiles/`, routing in `providers/`
+- No god methods — break up methods with distinct responsibilities
 
 ## Instructions
 
 1. Read each changed file listed above
 2. Check for violations of the rules above
-3. Focus on the code itself - you're a fresh reviewer, not the one who wrote it
-4. If Python LSP tools are available (mcp__pylsp__*), use them for:
-   - Getting diagnostics
-   - Finding references (useful for rename detection)
-   - Checking for unused imports
+3. Focus on design-level issues — mechanical/syntax issues are handled by `/check-pitfalls`
+4. If Python LSP tools are available (mcp__pylsp__*), use them for diagnostics and reference checks
 5. Report violations in this format:
 
 ```
 **Violation Found**
 - File: <path>
-- Line: <number>
 - Rule: <rule name>
 - Code: `<problematic code>`
 - Fix: <suggested fix>

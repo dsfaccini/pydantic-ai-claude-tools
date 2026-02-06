@@ -1,51 +1,55 @@
 ---
 allowed-tools: Bash(git diff:*), Bash(git status:*), Bash(git log:*), Read, Glob, Grep
-description: Check current changes against known review pitfalls from pydantic-ai
+description: Scan diff for mechanical code issues (comments, imports, types, tests). Run after coding is done to fix minutiae before committing.
 ---
 
-# Check PR Pitfalls
+# Check Mechanical Pitfalls
 
-Analyze current changes against known review patterns to catch issues before pushing.
+Scan the current diff for concrete, pattern-matchable code issues. This is a post-coding lint pass — design/architecture issues are handled by `/pydantic-review`.
 
 ## Steps
 
-### 1. Load Pitfall Patterns
-
-Read the pitfalls file. Check these locations in order:
-1. `./learnings/pitfalls.md` (symlinked in worktree)
-2. `~/projects/pydantic-ai-claude-tools/learnings/pitfalls.md` (fallback)
-
-### 2. Get Current Changes
+### 1. Get Current Changes
 
 Run `git diff HEAD` to see all uncommitted changes (staged + unstaged).
 
 If there are no uncommitted changes, run `git diff HEAD~1` to check the last commit.
 
-### 3. Analyze Against Pitfalls
+### 2. Scan Diff for Violations
 
-For each pitfall category, scan the diff for violations:
-
-**Imports:**
-- Search for `^+.*import ` inside function bodies (inline imports)
-- Verify inline imports are for circular deps or optional packages
+For each category below, check **only added/modified lines** in the diff:
 
 **Comments:**
-- Check for added comments that just restate code
-- Check for comments after `# pragma:`
+- Redundant comments that restate what the code does (e.g. `# Increment i by 1` on `i += 1`)
+- Comments after `# pragma:` directives (pragma should stand alone)
+- Line number references in comments (e.g. "line 42", "L123", "lines 10-20")
+- Comments referencing past state ("now supports...", "Original logic for...", "Previously this was...")
+
+**Imports:**
+- Inline imports inside function bodies — only acceptable for circular deps or optional packages
+- Verify any inline import has a justifying comment or is under `TYPE_CHECKING`
 
 **Types:**
-- Search for `# type: ignore` without specific codes
-- Search for `: Any` or `-> Any` type annotations
-
-**Documentation:**
-- Search for 'may want to', 'might want to' in docstrings
-- Check for hardcoded lists in documentation
+- Unspecific `# type: ignore` — should be `# pyright: ignore[specific-code]`
+- `Any` type annotations (`: Any`, `-> Any`, `list[Any]`)
+- Unannotated dict/list literals passed directly to methods (should have explicit types)
 
 **Tests:**
-- Check for multiple `assert` statements that could be a snapshot
-- Check for fixtures defined far from their tests
+- Multiple `assert` statements on similar data that could use `snapshot()`
+- Fixtures defined far from their tests (should be close or in conftest)
+- Empty `snapshot()` calls that need `pytest --inline-snapshot=create` to populate
 
-### 4. Report Findings
+**Documentation:**
+- Vague hedging language in docs/comments ("may want to", "might want to", "you could consider")
+- Hardcoded lists in documentation that will go stale
+- Early docstrings on functions whose logic isn't finalized yet
+
+**Misc:**
+- Missing `stacklevel` in `warnings.warn()` calls
+- For-loop just to check `isinstance` on list items — use `any(isinstance(i, T) for i in items)`
+- Double quotes for strings (pydantic-ai uses single quotes)
+
+### 3. Report Findings
 
 Output format:
 
@@ -54,7 +58,7 @@ Output format:
 
 ### [Category] - N issues
 
-- **file.py:123** - [Pitfall description]
+- **file.py** - [Pitfall description]
   Suggestion: [How to fix]
 
 ### Summary
@@ -63,10 +67,10 @@ Output format:
 - Recommendation: [pass/review before pushing]
 ```
 
-### 5. Suggest Fixes
+### 4. Suggest Fixes
 
 For each issue found, provide:
-1. The file:line reference
+1. The file path
 2. The specific pitfall violated
 3. A concrete fix suggestion
 

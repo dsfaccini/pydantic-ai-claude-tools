@@ -2,7 +2,7 @@
   "permissions": {
     "allow": [
       "Bash(.claude/skills/gh-cli-best-practices/get-latest-ci-failure.sh)",
-      "Bash(./local-notes/normalize-snapshots.zsh:*)",
+      "Bash(.claude/skills/pytest-vcr/run-vertex-tests.sh)",
       "Bash(echo:*)",
       "Bash(cat:*)",
       "Bash(curl:*)",
@@ -13,6 +13,7 @@
       "Bash(then)",
       "Bash(find:*)",
       "Bash(for:*)",
+      "Bash(git check-ignore:*)",
       "Bash(git diff:*)",
       "Bash(git fetch:*)",
       "Bash(git grep:*)",
@@ -57,6 +58,7 @@
       "mcp__acp__Edit",
       "mcp__logfire__logfire_link",
       "mcp__logfire__arbitrary_query",
+      "mcp__pylsp__*",
       "mcp__sequential-thinking__sequentialthinking",
       "Skill(gh-cli-best-practices:*)",
       "Skill(pytest-vcr:*)",
@@ -115,6 +117,15 @@
       }
     ],
     "Stop": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "[ -d pydantic_ai_slim ] && [ -n \"$(git diff HEAD --name-only 2>/dev/null | grep '\\.py$')\" ] && echo 'CONTINUE: Consider running /check-pitfalls before pushing' || true"
+          }
+        ]
+      },
       {
         "matcher": "Edit|Write|MultiEdit",
         "hooks": [

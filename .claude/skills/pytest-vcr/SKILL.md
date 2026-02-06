@@ -1,6 +1,7 @@
 ---
 name: pytest-vcr
 description: Record, rewrite, and debug VCR cassettes for HTTP recordings. Use when running tests with --record-mode, verifying cassette playback, or inspecting request/response bodies in YAML cassettes.
+allowed-tools: Bash(uv run pytest *), Bash(uv run python .claude/skills/pytest-vcr/parse_cassette.py *), Bash(.claude/skills/pytest-vcr/run-vertex-tests.sh *), Bash(source .env *), Bash(git diff *)
 ---
 
 # Pytest VCR Workflow
@@ -9,8 +10,10 @@ Use this skill when recording or re-recording VCR cassettes for tests, or when d
 
 ## Prerequisites
 
-- Ensure API keys are loaded in the environment or present in the `.env` file 
-- use the `.env.example` as a template
+- Verify the required API key env var is set (do NOT read `.env` - it contains secrets):
+  ```bash
+  source .env && printenv | grep -q '^OPENAI_API_KEY=' && echo 'ok' || echo 'missing'
+  ```
 - Tests must be using VCR for HTTP recording
 
 ## Important flags
@@ -37,7 +40,9 @@ source .env && uv run pytest path/to/test.py::test_function_name -v --tb=line --
 
 Multiple tests can be specified:
 ```bash
-source .env && uv run pytest path/to/test.py::test_one path/to/test.py::test_two -v --tb=line --record-mode=new_episodes
+# we use `rewrite` here because it works with both new and existing cassettes
+# and because we're selecting a specific set of tests there's no danger of overwriting unrelated cassettes
+source .env && uv run pytest path/to/test.py::test_one path/to/test.py::test_two -v --tb=line --record-mode=rewrite
 ```
 
 ### Step 2: Verify recordings
@@ -49,7 +54,7 @@ source .env && uv run pytest path/to/test.py::test_function_name -vv --tb=line
 
 ### Step 3: Review snapshots
 
-If tests use `snapshot()` assertions:
+If tests use [`snapshot()`](https://github.com/15r10nk/inline-snapshot) assertions:
 - The test run in Step 2 auto-fills snapshot content
 - Review the generated snapshot files to ensure they match expected output
 - You only review - don't manually write snapshot contents
@@ -86,6 +91,8 @@ Base64 strings longer than 100 chars are truncated for readability.
 
 ## Vertex AI Tests
 
+Vertex tests use the `skip_unless_vertex` fixture from `tests/conftest.py` — they only run in CI or when `ENABLE_VERTEX=1` is set. `ENABLE_VERTEX=1` is only needed when recording/rewriting cassettes locally; during playback, cassettes replay without live auth. Add `skip_unless_vertex: None` as a parameter to any new vertex test.
+
 Vertex tests require special auth setup. Use the provided script:
 
 ```bash
@@ -111,9 +118,12 @@ source .env && uv run pytest tests/models/test_openai.py::test_chat_completion -
 # 2. Verify playback and fill snapshots
 source .env && uv run pytest tests/models/test_openai.py::test_chat_completion -vv --tb=line
 
-# 3. Review any snapshot changes in the diff
-git diff tests/
+# 3. Review test code diffs (excludes cassettes)
+git diff tests/ -- ':!**/cassettes/**'
 
-# 4. Debug cassette contents if needed
+# 4. List new/changed cassettes (name only - use parse_cassette.py to inspect)
+git diff --name-only tests/ -- '**/cassettes/**'
+
+# 5. Inspect cassette contents if needed
 uv run python .claude/skills/pytest-vcr/parse_cassette.py tests/models/cassettes/test_openai/test_chat_completion.yaml
 ```

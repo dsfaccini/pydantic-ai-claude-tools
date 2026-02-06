@@ -32,13 +32,12 @@ else
     cp "$TOOLS_REPO/CLAUDE.local.template.md" "$TARGET_DIR/CLAUDE.local.md"
 fi
 
-# Copy .claude directory (overwrite)
+# Copy .claude directory (overwrite our files, keep destination-only files)
 mkdir -p "$TARGET_DIR/.claude"
 [ -f "$TOOLS_REPO/.claude/settings.local.json" ] && cp "$TOOLS_REPO/.claude/settings.local.json" "$TARGET_DIR/.claude/"
-[ -d "$TOOLS_REPO/.claude/agents" ] && cp -r "$TOOLS_REPO/.claude/agents" "$TARGET_DIR/.claude/"
-[ -d "$TOOLS_REPO/.claude/commands" ] && cp -r "$TOOLS_REPO/.claude/commands" "$TARGET_DIR/.claude/"
-[ -d "$TOOLS_REPO/.claude/skills" ] && cp -r "$TOOLS_REPO/.claude/skills" "$TARGET_DIR/.claude/"
-[ -d "$TOOLS_REPO/.claude/hooks" ] && cp -r "$TOOLS_REPO/.claude/hooks" "$TARGET_DIR/.claude/"
+for dir in agents commands skills hooks; do
+    [ -d "$TOOLS_REPO/.claude/$dir" ] && rsync -a "$TOOLS_REPO/.claude/$dir/" "$TARGET_DIR/.claude/$dir/"
+done
 
 # Copy tests/CLAUDE.md (skip silently if exists)
 if [ -f "$TOOLS_REPO/tests.CLAUDE.md" ] && [ ! -f "$TARGET_DIR/tests/CLAUDE.md" ]; then
@@ -48,13 +47,7 @@ fi
 
 # Copy local-notes structure (excluding memory.sqlite), empty report.md
 if [ -d "$TOOLS_REPO/local-notes" ]; then
-    mkdir -p "$TARGET_DIR/local-notes"
-    find "$TOOLS_REPO/local-notes" -type f ! -name "memory.sqlite" | while read file; do
-        rel_path="${file#$TOOLS_REPO/local-notes/}"
-        target_file="$TARGET_DIR/local-notes/$rel_path"
-        mkdir -p "$(dirname "$target_file")"
-        cp "$file" "$target_file"
-    done
+    rsync -a --exclude="memory.sqlite" "$TOOLS_REPO/local-notes/" "$TARGET_DIR/local-notes/"
     [ -f "$TARGET_DIR/local-notes/report.md" ] && > "$TARGET_DIR/local-notes/report.md"
 fi
 
