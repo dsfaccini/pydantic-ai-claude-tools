@@ -2,6 +2,13 @@
 # Usage: source this file, then call pydantic-worktree-checkout <branch-name>
 
 pydantic-worktree-checkout() {
+    if [ -z "$PYDANTIC_AI_TOOLS_REPO" ]; then
+        echo "Error: PYDANTIC_AI_TOOLS_REPO env var not set"
+        echo "Set it to your pydantic-ai-claude-tools repo path, e.g.:"
+        echo "  export PYDANTIC_AI_TOOLS_REPO=~/projects/pydantic-ai-claude-tools"
+        return 1
+    fi
+
     if [ -z "$PYDANTIC_AI_REPO" ]; then
         echo "Error: PYDANTIC_AI_REPO env var not set"
         echo "Set it to your pydantic-ai main repo path, e.g.:"
@@ -14,7 +21,6 @@ pydantic-worktree-checkout() {
         return 1
     fi
 
-    local script_dir="${0:A:h}"
     local branch_name="$1"
     local worktree_path="$(dirname "$PYDANTIC_AI_REPO")/$branch_name"
 
@@ -28,7 +34,7 @@ pydantic-worktree-checkout() {
     cd "$worktree_path" || return 1
 
     # Copy config files
-    "$script_dir/copy-pydantic-config.sh" . || return 1
+    "$PYDANTIC_AI_TOOLS_REPO/scripts/copy-pydantic-config.sh" . || return 1
 
     echo "Running make install..."
     make install || return 1
