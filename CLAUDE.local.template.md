@@ -22,6 +22,9 @@ Any TODOs and FILLOUT you find in this file should be completed after doing the 
 - prefer the `gh` cli utility instead of `WebFetch`ing github.com URLs. Use `gh api|issue|pr` commands to read information from relevant issues and pull requests, including comments and reviews (note that comments and reviews are different commands! so comments won't include reviews).
 - use `make format && make lint` at the end of all your changes to format the codebase
 - prefer `git mv` to `mv` wherever possible to simplify PR review and conflict resolution
+- `make typecheck` takes 45 seconds to run, so you must pipe it to a file (`make typecheck 2>&1 | tee /tmp/typecheck-output.txt`)
+	- to do subsequent analysis grep/read the saved file
+- in general, be aware when commands take long (e.g. 30+ seconds) to run or their output is large so you don't unnecessarily waste time or your context (e.g. when most of the output can be discarded)
 
 ## repo rules
 

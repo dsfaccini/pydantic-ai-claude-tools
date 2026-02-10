@@ -47,6 +47,7 @@
       "Bash(source .venv/bin/activate && uv run:*)",
       "Bash(source .venv/bin/activate && python:*)",
       "Bash(tail:*)",
+      "Bash(tee:*)",
       "Bash(test:*)",
       "Bash(uv pip show:*)",
       "Bash(uv run pytest tests/ -k:*)",
